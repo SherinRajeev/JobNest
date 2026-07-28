@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Sparkles, ArrowRight, Coffee, ShoppingBag, Truck, GraduationCap, Calendar, Building } from 'lucide-react';
+import { Search, MapPin, ArrowRight, Coffee, ShoppingBag, Truck, GraduationCap, Calendar, Building } from 'lucide-react';
 import { JobContext } from '../context/JobContext';
 import { JobCard } from '../components/JobCard';
 import { JobModal } from '../components/JobModal';
@@ -37,9 +37,6 @@ export const Home = () => {
     <div className="container">
       {/* Hero Section */}
       <section className="hero-section">
-        <div className="badge badge-primary" style={{ marginBottom: '1.25rem', padding: '0.4rem 1rem' }}>
-          <Sparkles size={14} /> Localized Part-Time Work Network • Kochi, Kerala
-        </div>
         <h1 className="hero-title">
           Find Part-Time <span className="gradient-text">Shifts & Recruiter Jobs</span> Near You In Kochi
         </h1>
