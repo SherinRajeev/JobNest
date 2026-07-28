@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogIn, UserCheck, ShieldCheck, AlertCircle } from 'lucide-react';
+import { LogIn, AlertCircle } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 export const Login = () => {
@@ -30,67 +30,22 @@ export const Login = () => {
     }
   };
 
-  const handleApplicantLogin = async () => {
-    setEmail('seeker@jobnest.com');
-    setPassword('password123');
-    setLoading(true);
-    setError(null);
-    try {
-      await login('seeker@jobnest.com', 'password123');
-      navigate('/jobs');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleAdminLogin = async () => {
-    setEmail('employer@jobnest.com');
-    setPassword('password123');
-    setLoading(true);
-    setError(null);
-    try {
-      await login('employer@jobnest.com', 'password123');
-      navigate('/employer-dashboard');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="container" style={{ paddingTop: '3.5rem', maxWidth: '460px' }}>
+    <div className="container" style={{ paddingTop: '3.5rem', maxWidth: '440px' }}>
       <div className="card-glass" style={{ padding: '2.25rem' }}>
         <h1 style={{ fontSize: '1.8rem', textAlign: 'center', marginBottom: '0.5rem' }}>Account <span className="gradient-text">Sign In</span></h1>
         <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.75rem' }}>
-          Access your applicant dashboard or recruiter portal.
+          Sign in to your JobNest applicant or admin account.
         </p>
 
         {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
-
-        {/* Applicant Login and Admin Login Buttons */}
-        <div style={{ background: 'var(--bg-glass)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-md)', padding: '1rem', marginBottom: '1.5rem', textAlign: 'center' }}>
-          <div style={{ fontSize: '0.82rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            ⚡ Instant Portal Access
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-            <button type="button" onClick={handleApplicantLogin} className="btn btn-secondary btn-sm" style={{ fontSize: '0.82rem' }}>
-              <UserCheck size={14} color="var(--primary)" /> Applicant Login
-            </button>
-            <button type="button" onClick={handleAdminLogin} className="btn btn-secondary btn-sm" style={{ fontSize: '0.82rem' }}>
-              <ShieldCheck size={14} color="var(--emerald)" /> Admin Login
-            </button>
-          </div>
-        </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label className="form-label">Email Address</label>
             <input
               type="email"
-              placeholder="you@example.com"
+              placeholder="name@example.com"
               value={email}
               onChange={e => setEmail(e.target.value)}
               className="form-control"
@@ -102,7 +57,7 @@ export const Login = () => {
             <label className="form-label">Password</label>
             <input
               type="password"
-              placeholder="••••••••"
+              placeholder="Enter your password"
               value={password}
               onChange={e => setPassword(e.target.value)}
               className="form-control"
@@ -110,7 +65,7 @@ export const Login = () => {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary btn-full" style={{ marginTop: '1rem' }} disabled={loading}>
+          <button type="submit" className="btn btn-primary btn-full" style={{ marginTop: '1.25rem' }} disabled={loading}>
             {loading ? 'Authenticating...' : <>Sign In <LogIn size={16} /></>}
           </button>
         </form>
