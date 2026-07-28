@@ -38,65 +38,65 @@ const seedData = async () => {
       role: 'employer',
       phone: '+91 91234 56789',
       location: 'Kanjikuzhy, Kottayam',
-      bio: 'Recruiter at Local Cafe & Retail Networks in Kottayam Town.',
+      bio: 'Recruiter at Local Business & Retail Networks in Kottayam Town.',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150'
     });
 
     const jobs = await Job.insertMany([
       {
-        title: 'Weekend Barista & Counter Staff',
-        company: 'Highland Roasters Cafe',
+        title: 'Weekend Coffee Barista & Billing Staff',
+        company: 'Indian Coffee House (ICH)',
         employer: employer._id,
         category: 'Cafe & Barista',
         hourlyRate: 250,
         shiftTiming: 'Weekend Special',
         hoursPerWeek: 16,
-        locationName: 'Kanjikuzhy Junction, Kottayam Town',
-        coordinates: { lat: 9.5916, lng: 76.5330 },
-        distanceKm: 0.8,
-        description: 'Looking for an energetic weekend barista to brew coffees, take guest orders, and assist store operations near Kanjikuzhy.',
-        requirements: ['Basic beverage preparation', 'Communication in Malayalam/English', 'Punctual & polite'],
-        perks: ['Free beverage per shift', 'Performance tips', 'Flexible weekend rosters'],
+        locationName: 'Near KSRTC Bus Stand, Kottayam Town',
+        coordinates: { lat: 9.5890, lng: 76.5210 },
+        distanceKm: 0.3,
+        description: 'Looking for a friendly weekend barista & order billing assistant for peak hours at Indian Coffee House near KSRTC Bus Stand.',
+        requirements: ['Basic coffee/beverage serving', 'Malayalam & basic English communication', 'Punctual & team-oriented'],
+        perks: ['Free coffee & snacks per shift', 'Performance tips', 'Flexible weekend rosters'],
         positionsAvailable: 2,
         status: 'active'
       },
       {
-        title: 'Evening Retail Store Associate',
-        company: 'Textile World Mart',
+        title: 'Festival Season Sales Associate',
+        company: 'Pothys Silks & Superstore',
         employer: employer._id,
         category: 'Retail & Store',
         hourlyRate: 220,
         shiftTiming: 'Evening (6PM - 11PM)',
         hoursPerWeek: 15,
-        locationName: 'Thirunakkara Bus Stand Road, Kottayam',
-        coordinates: { lat: 9.5890, lng: 76.5210 },
-        distanceKm: 1.2,
-        description: 'Assist shoppers during peak evening hours, restock store displays, and manage customer checkout.',
-        requirements: ['Friendly customer handling', 'Punctual attendance', 'Basic billing awareness'],
-        perks: ['15% employee discount', 'Travel allowance for late evening shifts'],
+        locationName: 'KGB Road, Thirunakkara, Kottayam',
+        coordinates: { lat: 9.5916, lng: 76.5222 },
+        distanceKm: 0.0,
+        description: 'Assist walk-in shoppers during peak evening hours, restock store garment sections, and assist counter checkout at Pothys Kottayam.',
+        requirements: ['Friendly customer assistance', 'Punctual attendance', 'Basic billing awareness'],
+        perks: ['15% employee store discount', 'Travel allowance for late evening shifts'],
         positionsAvailable: 3,
         status: 'active'
       },
       {
-        title: 'Express Parcel Delivery Partner',
-        company: 'Kottayam Express Logistics',
+        title: 'Part-Time Delivery Partner (Bike/Scooter)',
+        company: 'Swiggy Delivery Hub Kottayam',
         employer: employer._id,
         category: 'Delivery & Logistics',
         hourlyRate: 300,
         shiftTiming: 'Flexible',
         hoursPerWeek: 20,
-        locationName: 'Collectorate Road, Kottayam Town',
-        coordinates: { lat: 9.5950, lng: 76.5260 },
-        distanceKm: 2.0,
-        description: 'Deliver e-commerce parcels and local packages across Kottayam Town and nearby residential areas.',
-        requirements: ['Two-wheeler or scooter with valid license', 'Smartphone with GPS navigation'],
+        locationName: 'Kanjikuzhy Junction, Kottayam',
+        coordinates: { lat: 9.5916, lng: 76.5330 },
+        distanceKm: 1.2,
+        description: 'Deliver food orders and quick-commerce parcels across Kanjikuzhy, Collectorate, and nearby Kottayam Town hubs.',
+        requirements: ['Two-wheeler / scooter with valid license', 'Smartphone with GPS app'],
         perks: ['Weekly direct bank payouts', 'Fuel allowance', 'Keep 100% of tips'],
         positionsAvailable: 5,
         status: 'active'
       },
       {
-        title: 'Class 9-12 Physics & Maths Tutor',
-        company: 'CMS Academic Tuition Hub',
+        title: 'Class 10-12 Physics & Maths Instructor',
+        company: 'Brilliant Coaching Centre Support',
         employer: employer._id,
         category: 'Tutoring & Education',
         hourlyRate: 450,
@@ -104,10 +104,10 @@ const seedData = async () => {
         hoursPerWeek: 10,
         locationName: 'CMS College Road, Kottayam',
         coordinates: { lat: 9.5980, lng: 76.5180 },
-        distanceKm: 2.8,
-        description: 'Teach small batches of high school students in Mathematics & Physics with focus on Board Exam preparation.',
-        requirements: ['B.Tech / B.Sc student or graduate', 'Clear concept explanations'],
-        perks: ['High hourly payout', 'Quiet tuition center environment', 'Flexible shift timings'],
+        distanceKm: 0.8,
+        description: 'Conduct small-group doubt solving and practice sessions for Class 10, 11, and 12 students in Physics and Mathematics.',
+        requirements: ['B.Tech / B.Sc student or graduate', 'Clear concept explanations in Malayalam/English'],
+        perks: ['High hourly payout', 'Quiet academic center environment', 'Flexible shift timings'],
         positionsAvailable: 2,
         status: 'active'
       }
@@ -116,13 +116,13 @@ const seedData = async () => {
     await Application.create({
       job: jobs[0]._id,
       applicant: seeker._id,
-      coverNote: 'I live nearby in Kottayam Town and available for weekend shifts.',
+      coverNote: 'I live near KSRTC Bus Stand in Kottayam Town and available for weekend shifts.',
       availability: 'Immediate (Saturdays & Sundays)',
       phone: '+91 98765 43210',
       status: 'Applied'
     });
 
-    console.log('Database seeded with Kottayam Town, Kerala listings & Rupee (₹) rates!');
+    console.log('Database seeded with real Kottayam business job listings!');
     process.exit(0);
   } catch (error) {
     console.error('Database seeding failed:', error.message);
