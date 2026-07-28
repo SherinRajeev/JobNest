@@ -110,6 +110,108 @@ const seedData = async () => {
         perks: ['High hourly payout', 'Quiet academic center environment', 'Flexible shift timings'],
         positionsAvailable: 2,
         status: 'active'
+      },
+      {
+        title: 'Trade Fair & Exhibition Event Crew',
+        company: 'Nagampadam Exhibition Committee',
+        employer: employer._id,
+        category: 'Event Staff',
+        hourlyRate: 350,
+        shiftTiming: 'Weekend Special',
+        hoursPerWeek: 14,
+        locationName: 'Nagampadam Stadium Grounds, Kottayam',
+        coordinates: { lat: 9.6010, lng: 76.5280 },
+        distanceKm: 1.2,
+        description: 'Join event crew for ticket checking, hall guidance, and crowd control during upcoming Kottayam Trade Fair & Flower Show.',
+        requirements: ['Energetic personality', 'Good communication skills'],
+        perks: ['Free event crew pass', 'Catered food & snacks', 'Official event certificate'],
+        positionsAvailable: 8,
+        status: 'active'
+      },
+      {
+        title: 'Evening Patient Reception & Help Desk Staff',
+        company: 'Caritas / Medical Center Desk',
+        employer: employer._id,
+        category: 'Office & Admin',
+        hourlyRate: 280,
+        shiftTiming: 'Morning (8AM - 1PM)',
+        hoursPerWeek: 15,
+        locationName: 'Collectorate Junction, Kottayam',
+        coordinates: { lat: 9.5950, lng: 76.5260 },
+        distanceKm: 0.6,
+        description: 'Assist visitors with token generation, direct patients to outpatient departments, and handle front desk phone queries.',
+        requirements: ['Basic computer proficiency', 'Polite phone manner & patient assistance'],
+        perks: ['Clean air-conditioned workspace', 'Tea/coffee break provided', 'Certificate of hospital admin experience'],
+        positionsAvailable: 1,
+        status: 'active'
+      },
+      {
+        title: 'Festival Garment & Counter Assistant',
+        company: 'Seematti Silks Kottayam',
+        employer: employer._id,
+        category: 'Retail & Store',
+        hourlyRate: 230,
+        shiftTiming: 'Evening (6PM - 11PM)',
+        hoursPerWeek: 15,
+        locationName: 'KK Road, Central Junction, Kottayam Town',
+        coordinates: { lat: 9.5910, lng: 76.5230 },
+        distanceKm: 0.1,
+        description: 'Assist customer floor queries, fold and organize saree/garment displays, and support store cash counter staff during busy evening hours.',
+        requirements: ['Punctual & active', 'Friendly customer interaction'],
+        perks: ['Store discount', 'Late evening drop allowance'],
+        positionsAvailable: 4,
+        status: 'active'
+      },
+      {
+        title: 'Evening Kitchen Crew & Dispatch Support',
+        company: "Baker's Oven & Cafe",
+        employer: employer._id,
+        category: 'Cafe & Barista',
+        hourlyRate: 240,
+        shiftTiming: 'Evening (6PM - 11PM)',
+        hoursPerWeek: 14,
+        locationName: 'Kallarackal Bazaar, Kottayam Town',
+        coordinates: { lat: 9.5935, lng: 76.5245 },
+        distanceKm: 0.3,
+        description: 'Assist bakery chefs with pastry packing, manage takeout order dispatching, and maintain clean kitchen counters.',
+        requirements: ['Food safety & hygiene awareness', 'Ability to work evening shifts'],
+        perks: ['Complimentary bakery snacks', 'Flexible shift scheduling'],
+        positionsAvailable: 2,
+        status: 'active'
+      },
+      {
+        title: 'Cataloging & Library Desk Assistant',
+        company: 'Kottayam Public Library',
+        employer: employer._id,
+        category: 'Office & Admin',
+        hourlyRate: 260,
+        shiftTiming: 'Flexible',
+        hoursPerWeek: 12,
+        locationName: 'Public Library Road, Shastri Nagar, Kottayam',
+        coordinates: { lat: 9.5925, lng: 76.5215 },
+        distanceKm: 0.1,
+        description: 'Organize book archives, issue member borrowing cards, catalog digital records, and maintain quiet reading hall decorum.',
+        requirements: ['Basic computer entry', 'Organized and meticulous manner'],
+        perks: ['Free library membership', 'Quiet study environment'],
+        positionsAvailable: 1,
+        status: 'active'
+      },
+      {
+        title: 'Primary English & Drawing Tutor',
+        company: 'KidsAcademy Learning Corner',
+        employer: employer._id,
+        category: 'Tutoring & Education',
+        hourlyRate: 380,
+        shiftTiming: 'Afternoon (1PM - 6PM)',
+        hoursPerWeek: 10,
+        locationName: 'Good Shepherd Road, Kottayam',
+        coordinates: { lat: 9.5880, lng: 76.5270 },
+        distanceKm: 0.7,
+        description: 'Conduct creative English reading, phonics, and basic drawing classes for primary school children (Classes 1-5).',
+        requirements: ['Patience with young kids', 'Good English handwriting & fluency'],
+        perks: ['Creative teaching environment', 'Teaching certificate'],
+        positionsAvailable: 2,
+        status: 'active'
       }
     ]);
 
@@ -122,7 +224,7 @@ const seedData = async () => {
       status: 'Applied'
     });
 
-    console.log('Database seeded with real Kottayam business job listings!');
+    console.log('Database seeded with 10 Kottayam business job listings!');
     process.exit(0);
   } catch (error) {
     console.error('Database seeding failed:', error.message);
