@@ -1,76 +1,84 @@
 import React, { useContext } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Briefcase, PlusCircle, LogOut, Search, Compass, BookMarked, ShieldCheck, UserCheck } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Compass, User, LogOut, PlusCircle, LayoutDashboard, Search } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 export const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
+
+  const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'User'}`;
 
   return (
     <nav className="navbar">
-      <div className="container nav-wrapper">
-        <Link to="/" className="logo-brand">
-          <div className="logo-icon">
-            <Compass size={24} />
+      <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {/* Brand Logo */}
+        <Link to="/" className="navbar-brand">
+          <div className="navbar-logo">
+            <Compass size={22} color="#ffffff" />
           </div>
           <span>Job<span className="gradient-text">Nest</span></span>
         </Link>
 
-        <ul className="nav-links">
-          <li>
-            <Link to="/jobs" className={`nav-link ${location.pathname === '/jobs' ? 'active' : ''}`}>
-              <Search size={17} /> Explore Nearby Shifts
-            </Link>
-          </li>
-          {user && user.role === 'seeker' && (
-            <li>
-              <Link to="/seeker-dashboard" className={`nav-link ${location.pathname === '/seeker-dashboard' ? 'active' : ''}`}>
-                <BookMarked size={17} /> Applicant Dashboard
-              </Link>
-            </li>
-          )}
-          {user && user.role === 'employer' && (
-            <>
-              <li>
-                <Link to="/employer-dashboard" className={`nav-link ${location.pathname === '/employer-dashboard' ? 'active' : ''}`}>
-                  <ShieldCheck size={17} /> Admin Hiring Portal
-                </Link>
-              </li>
-              <li>
-                <Link to="/post-job" className="btn btn-primary btn-sm">
-                  <PlusCircle size={16} /> Post Shift Opening
-                </Link>
-              </li>
-            </>
-          )}
-        </ul>
+        {/* Global Search Bar Quick Link */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <Link to="/jobs" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500 }}>
+            <Search size={16} /> Explore Nearby Shifts
+          </Link>
+        </div>
 
-        <div className="nav-user">
+        {/* Auth & Navigation Actions */}
+        <div className="nav-actions">
           {user ? (
-            <div className="user-badge">
-              <img src={user.avatar} alt={user.name} className="avatar-sm" />
-              <div style={{ lineHeight: 1.2 }}>
-                <div style={{ fontWeight: 600, fontSize: '0.88rem' }}>{user.name}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'capitalize' }}>
-                  {user.role === 'employer' ? 'Admin / Recruiter' : 'Applicant'}
-                </div>
+            <>
+              {user.role === 'employer' ? (
+                <>
+                  <Link to="/post-job" className="btn btn-primary btn-sm">
+                    <PlusCircle size={16} /> Post New Shift
+                  </Link>
+                  <Link to="/employer-dashboard" className="btn btn-secondary btn-sm">
+                    <LayoutDashboard size={16} /> Admin Portal
+                  </Link>
+                </>
+              ) : (
+                <Link to="/seeker-dashboard" className="btn btn-secondary btn-sm">
+                  <LayoutDashboard size={16} /> My Applications
+                </Link>
+              )}
+
+              {/* User Profile Capsule */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', padding: '0.35rem 0.75rem', background: 'var(--bg-glass)', border: '1px solid var(--border-subtle)', borderRadius: '30px' }}>
+                <img
+                  src={user.avatar || defaultAvatar}
+                  alt={user.name}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = defaultAvatar;
+                  }}
+                  style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', background: '#eff6ff' }}
+                />
+                <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)' }}>
+                  {user.role === 'employer' ? 'Admin' : 'Applicant'}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  title="Sign Out"
+                  style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '2px' }}
+                >
+                  <LogOut size={16} />
+                </button>
               </div>
-              <button onClick={handleLogout} className="btn btn-secondary btn-sm" style={{ padding: '0.3rem 0.6rem', marginLeft: '0.5rem' }} title="Logout">
-                <LogOut size={14} />
-              </button>
-            </div>
+            </>
           ) : (
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <>
               <Link to="/login" className="btn btn-secondary btn-sm">Sign In</Link>
               <Link to="/register" className="btn btn-primary btn-sm">Register</Link>
-            </div>
+            </>
           )}
         </div>
       </div>

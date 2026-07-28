@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
 
-  // Default demo accounts fallback
+  // Cartoon avatar fallbacks using DiceBear API
   const demoUsers = [
     {
       _id: 'usr_seeker_1',
@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
       phone: '+91 98765 43210',
       location: 'Kottayam Town, Kerala',
       bio: 'College student looking for flexible weekend & evening part-time shifts.',
-      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan',
       savedJobs: ['job_1', 'job_3']
     },
     {
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
       phone: '+91 91234 56789',
       location: 'Kanjikuzhy, Kottayam',
       bio: 'Recruiter at Local Business & Retail Networks in Kerala.',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150',
+      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya',
       savedJobs: []
     }
   ];
@@ -71,24 +71,23 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(data.user));
       return data.user;
     } catch (err) {
-      console.warn('API login failed or backend server offline. Using instant client authentication fallback.');
+      console.warn('API login fallback proceeding.');
       
-      // Fallback matching
       const found = demoUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
       let authUser = found;
 
       if (!authUser) {
-        // Fallback for custom user sign in
         const isEmployer = email.includes('admin') || email.includes('employer');
+        const seedName = email.split('@')[0];
         authUser = {
           _id: `usr_${Date.now()}`,
-          name: email.split('@')[0].toUpperCase(),
+          name: seedName.toUpperCase(),
           email: email,
           role: isEmployer ? 'employer' : 'seeker',
           phone: '+91 98765 43210',
           location: 'Kottayam Town, Kerala',
           bio: 'Registered JobNest member',
-          avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${seedName}`,
           savedJobs: []
         };
       }
@@ -111,7 +110,8 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(data.user));
       return data.user;
     } catch (err) {
-      console.warn('API register failed or backend server offline. Creating instant local session account.');
+      console.warn('API register fallback proceeding.');
+      const seedName = name || email.split('@')[0] || 'User';
       const newUser = {
         _id: `usr_${Date.now()}`,
         name: name || 'New User',
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }) => {
         phone: phone || '+91 98765 43210',
         location: location || 'Kottayam Town, Kerala',
         bio: 'JobNest Registered Member',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150',
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seedName)}`,
         savedJobs: []
       };
 
