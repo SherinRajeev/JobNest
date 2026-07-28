@@ -27,10 +27,11 @@ export const JobProvider = ({ children }) => {
   const [detectedCity, setDetectedCity] = useState('Kottayam Town');
   const [isGpsActive, setIsGpsActive] = useState(false);
 
+  // Set default maxDistance to 250km so ALL jobs across Kerala display by default
   const [filters, setFilters] = useState({
     search: '',
     category: 'All',
-    maxDistance: 25,
+    maxDistance: 250,
     minRate: 0,
     shiftTiming: 'All'
   });
@@ -47,7 +48,6 @@ export const JobProvider = ({ children }) => {
           setUserCoords({ lat, lng });
           setIsGpsActive(true);
 
-          // Reverse Geocode using OpenStreetMap Nominatim
           try {
             const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
             const data = await res.json();
@@ -58,7 +58,7 @@ export const JobProvider = ({ children }) => {
           }
         },
         (error) => {
-          console.log('GPS tracking permission denied or unavailable, using Kottayam Town default.');
+          console.log('GPS tracking using Kottayam Town center.');
           setIsGpsActive(false);
         },
         { enableHighAccuracy: true, timeout: 10000 }
@@ -83,7 +83,7 @@ export const JobProvider = ({ children }) => {
       const { data } = await API.get(`/jobs?${params.toString()}`);
 
       // Calculate real distances based on visitor's live GPS coordinates & sort by proximity
-      const processedJobs = data.map(j => {
+      const processedJobs = (data || []).map(j => {
         const jLat = j.coordinates?.lat || 9.5916;
         const jLng = j.coordinates?.lng || 76.5222;
         const dist = calculateDistanceKm(userCoords.lat, userCoords.lng, jLat, jLng);

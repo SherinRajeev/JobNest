@@ -1,7 +1,10 @@
-import React from 'react';
-import { Filter, MapPin, IndianRupee, Clock, Layers } from 'lucide-react';
+import React, { useContext } from 'react';
+import { Filter, RotateCcw, Search, MapPin, IndianRupee } from 'lucide-react';
+import { JobContext } from '../context/JobContext';
 
-export const FilterSidebar = ({ filters, setFilters, onApply }) => {
+export const FilterSidebar = () => {
+  const { filters, setFilters, fetchJobs } = useContext(JobContext);
+
   const categories = [
     'All',
     'Cafe & Barista',
@@ -14,111 +17,185 @@ export const FilterSidebar = ({ filters, setFilters, onApply }) => {
 
   const shiftTimings = [
     'All',
-    'Flexible',
     'Morning (8AM - 1PM)',
     'Afternoon (1PM - 6PM)',
     'Evening (6PM - 11PM)',
-    'Weekend Special'
+    'Weekend Special',
+    'Flexible'
   ];
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    const updated = { ...filters, [name]: value };
+  const handleCategoryChange = (cat) => {
+    const updated = { ...filters, category: cat };
     setFilters(updated);
-    if (onApply) onApply(updated);
+    fetchJobs(updated);
   };
 
-  const resetFilters = () => {
-    const initial = {
+  const handleShiftChange = (shift) => {
+    const updated = { ...filters, shiftTiming: shift };
+    setFilters(updated);
+    fetchJobs(updated);
+  };
+
+  const handleDistanceChange = (e) => {
+    const updated = { ...filters, maxDistance: Number(e.target.value) };
+    setFilters(updated);
+    fetchJobs(updated);
+  };
+
+  const handleRateChange = (e) => {
+    const updated = { ...filters, minRate: Number(e.target.value) };
+    setFilters(updated);
+    fetchJobs(updated);
+  };
+
+  const handleReset = () => {
+    const resetFilters = {
       search: '',
       category: 'All',
-      maxDistance: 10,
+      maxDistance: 250,
       minRate: 0,
       shiftTiming: 'All'
     };
-    setFilters(initial);
-    if (onApply) onApply(initial);
+    setFilters(resetFilters);
+    fetchJobs(resetFilters);
   };
 
   return (
-    <aside className="filter-panel">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-        <h3 style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Filter size={18} color="var(--primary)" /> Filter Shifts
-        </h3>
-        <button onClick={resetFilters} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>
-          Reset
+    <div className="card-glass" style={{ padding: '1.5rem', height: 'fit-content', sticky: 'top', top: '100px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '1.1rem' }}>
+          <Filter size={18} color="var(--primary)" /> Filters
+        </div>
+        <button
+          onClick={handleReset}
+          className="btn btn-secondary btn-sm"
+          style={{ padding: '0.35rem 0.65rem', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+        >
+          <RotateCcw size={13} /> Reset
         </button>
       </div>
 
-      {/* Maximum Distance Slider */}
-      <div className="filter-group">
-        <label className="filter-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <MapPin size={15} color="var(--primary)" /> Max Distance
-          </span>
-          <span style={{ color: 'var(--primary)', fontWeight: 700 }}>{filters.maxDistance} km</span>
-        </label>
-        <input
-          type="range"
-          name="maxDistance"
-          min="1"
-          max="25"
-          step="1"
-          value={filters.maxDistance}
-          onChange={handleChange}
-          className="range-slider"
-        />
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.2rem' }}>
-          <span>1 km</span>
-          <span>10 km</span>
-          <span>25 km</span>
+      {/* Search Input */}
+      <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+        <label className="form-label">Search Keywords</label>
+        <div style={{ position: 'relative' }}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Store, title, location..."
+            value={filters.search}
+            onChange={e => setFilters({ ...filters, search: e.target.value })}
+            onKeyDown={e => e.key === 'Enter' && fetchJobs(filters)}
+            style={{ paddingLeft: '2.5rem' }}
+          />
+          <Search size={16} color="var(--text-muted)" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
         </div>
       </div>
 
-      {/* Minimum Pay Rate */}
-      <div className="filter-group">
-        <label className="filter-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <IndianRupee size={15} color="var(--emerald)" /> Min Hourly Pay
+      {/* Maximum Distance Slider */}
+      <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+          <label className="form-label" style={{ marginBottom: 0 }}>Max Radius</label>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary)' }}>
+            <MapPin size={13} style={{ display: 'inline', marginRight: '2px' }} />
+            {filters.maxDistance} km
           </span>
-          <span style={{ color: 'var(--emerald)', fontWeight: 700 }}>₹{filters.minRate}/hr</span>
-        </label>
+        </div>
         <input
           type="range"
-          name="minRate"
+          min="5"
+          max="300"
+          step="5"
+          value={filters.maxDistance}
+          onChange={handleDistanceChange}
+          style={{ width: '100%', accentColor: 'var(--primary)', cursor: 'pointer' }}
+        />
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+          <span>5 km</span>
+          <span>150 km</span>
+          <span>300 km</span>
+        </div>
+      </div>
+
+      {/* Minimum Hourly Pay Slider */}
+      <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+          <label className="form-label" style={{ marginBottom: 0 }}>Min Hourly Pay</label>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--emerald)' }}>
+            ₹{filters.minRate}/hr
+          </span>
+        </div>
+        <input
+          type="range"
           min="0"
           max="800"
-          step="50"
+          step="25"
           value={filters.minRate}
-          onChange={handleChange}
-          className="range-slider"
+          onChange={handleRateChange}
+          style={{ width: '100%', accentColor: 'var(--emerald)', cursor: 'pointer' }}
         />
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px' }}>
+          <span>₹0/hr</span>
+          <span>₹400/hr</span>
+          <span>₹800/hr</span>
+        </div>
       </div>
 
       {/* Category Selection */}
-      <div className="filter-group">
-        <label className="filter-title" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Layers size={15} color="var(--primary)" /> Category
-        </label>
-        <select name="category" value={filters.category} onChange={handleChange} className="form-control">
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
+      <div className="form-group" style={{ marginBottom: '1.5rem' }}>
+        <label className="form-label">Category</label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          {categories.map((cat, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => handleCategoryChange(cat)}
+              style={{
+                textAlign: 'left',
+                padding: '0.5rem 0.85rem',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.88rem',
+                fontWeight: filters.category === cat ? 600 : 400,
+                background: filters.category === cat ? 'var(--primary-light)' : 'transparent',
+                color: filters.category === cat ? 'var(--primary)' : 'var(--text-muted)',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {cat}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
 
-      {/* Shift Timing */}
-      <div className="filter-group">
-        <label className="filter-title" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Clock size={15} color="var(--amber)" /> Shift Timing
-        </label>
-        <select name="shiftTiming" value={filters.shiftTiming} onChange={handleChange} className="form-control">
-          {shiftTimings.map(shift => (
-            <option key={shift} value={shift}>{shift}</option>
+      {/* Shift Timing Filter */}
+      <div className="form-group">
+        <label className="form-label">Shift Timing</label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          {shiftTimings.map((st, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => handleShiftChange(st)}
+              style={{
+                textAlign: 'left',
+                padding: '0.5rem 0.85rem',
+                borderRadius: 'var(--radius-sm)',
+                fontSize: '0.88rem',
+                fontWeight: filters.shiftTiming === st ? 600 : 400,
+                background: filters.shiftTiming === st ? 'rgba(37,99,235,0.08)' : 'transparent',
+                color: filters.shiftTiming === st ? 'var(--primary)' : 'var(--text-muted)',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              {st}
+            </button>
           ))}
-        </select>
+        </div>
       </div>
-    </aside>
+    </div>
   );
 };
