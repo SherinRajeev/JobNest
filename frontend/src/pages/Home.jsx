@@ -1,13 +1,13 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, ArrowRight, Coffee, ShoppingBag, Truck, GraduationCap, Calendar, Building } from 'lucide-react';
+import { Search, MapPin, ArrowRight, Coffee, ShoppingBag, Truck, GraduationCap, Calendar, Building, Navigation } from 'lucide-react';
 import { JobContext } from '../context/JobContext';
 import { JobCard } from '../components/JobCard';
 import { JobModal } from '../components/JobModal';
 import { MapView } from '../components/MapView';
 
 export const Home = () => {
-  const { jobs, filters, setFilters, fetchJobs } = useContext(JobContext);
+  const { jobs, filters, setFilters, fetchJobs, detectedCity, isGpsActive, trackUserLocation } = useContext(JobContext);
   const [selectedJob, setSelectedJob] = useState(null);
   const navigate = useNavigate();
 
@@ -37,11 +37,19 @@ export const Home = () => {
     <div className="container">
       {/* Hero Section */}
       <section className="hero-section">
+        {/* GPS Live Tracking Badge */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--emerald-light)', border: '1px solid rgba(5,150,105,0.25)', padding: '0.4rem 0.85rem', borderRadius: '20px', fontSize: '0.82rem', fontWeight: 600, color: 'var(--emerald)', marginBottom: '1.25rem' }}>
+          <Navigation size={13} /> Near: {detectedCity} {isGpsActive ? '(Live GPS Active)' : ''}
+          <button onClick={trackUserLocation} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: 700, cursor: 'pointer', marginLeft: '0.3rem', textDecoration: 'underline' }}>
+            Auto-Detect Location
+          </button>
+        </div>
+
         <h1 className="hero-title">
           Find Part-Time <span className="gradient-text">Shifts & Recruiter Jobs</span> Near You
         </h1>
         <p className="hero-subtitle">
-          JobNest connects students, freelancers, and shift workers across Kerala with nearby stores, cafes, tutoring centers, and recruiters offering flexible hourly pay.
+          JobNest auto-tracks your live GPS location to calculate real distances and show nearby shifts, retail opportunities, and recruiters right around you.
         </p>
 
         {/* Hero Search Bar */}
@@ -70,8 +78,8 @@ export const Home = () => {
       <section style={{ margin: '3rem 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem' }}>Neighborhood <span className="gradient-text">Shift Map</span></h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem' }}>Live recruiters & active openings centered around your location.</p>
+            <h2 style={{ fontSize: '1.75rem' }}>Live GPS <span className="gradient-text">Shift Radar Map</span></h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem' }}>Live recruiters & active openings centered around {detectedCity}.</p>
           </div>
           <button onClick={() => navigate('/jobs')} className="btn btn-secondary btn-sm">
             View Map & Filters
@@ -110,8 +118,8 @@ export const Home = () => {
       <section style={{ margin: '4rem 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem' }}>Active Openings <span className="gradient-text">Near You</span></h2>
-            <p style={{ color: 'var(--text-muted)' }}>Apply directly to recruiters in your neighborhood.</p>
+            <h2 style={{ fontSize: '1.75rem' }}>Closest Shifts <span className="gradient-text">Near {detectedCity}</span></h2>
+            <p style={{ color: 'var(--text-muted)' }}>Sorted automatically by exact GPS distance from your location.</p>
           </div>
           <button onClick={() => navigate('/jobs')} className="btn btn-primary btn-sm">
             Browse All ({jobs.length})
