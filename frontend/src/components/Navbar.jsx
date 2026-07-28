@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Compass, User, LogOut, PlusCircle, LayoutDashboard, Search } from 'lucide-react';
+import { Compass, LogOut, PlusCircle, LayoutDashboard, Search } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 export const Navbar = () => {
@@ -12,34 +12,48 @@ export const Navbar = () => {
     navigate('/');
   };
 
-  const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name || 'User'}`;
+  const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.name || 'User')}`;
 
   return (
     <nav className="navbar">
-      <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        {/* Brand Logo */}
-        <Link to="/" className="navbar-brand">
-          <div className="navbar-logo">
+      <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap' }}>
+        {/* Brand Logo with Guarantee Visible Icon Badge */}
+        <Link to="/" className="navbar-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            minWidth: '40px',
+            minHeight: '40px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 12px rgba(37,99,235,0.3)',
+            flexShrink: 0
+          }}>
             <Compass size={22} color="#ffffff" />
           </div>
-          <span>Job<span className="gradient-text">Nest</span></span>
+          <span style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
+            Job<span className="gradient-text">Nest</span>
+          </span>
         </Link>
 
-        {/* Global Search Bar Quick Link */}
+        {/* Global Search Quick Link */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Link to="/jobs" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500 }}>
+          <Link to="/jobs" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 500, textDecoration: 'none' }}>
             <Search size={16} /> Explore Nearby Shifts
           </Link>
         </div>
 
         {/* Auth & Navigation Actions */}
-        <div className="nav-actions">
+        <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {user ? (
             <>
               {user.role === 'employer' ? (
                 <>
                   <Link to="/post-job" className="btn btn-primary btn-sm">
-                    <PlusCircle size={16} /> Post New Shift
+                    <PlusCircle size={16} /> Post Shift
                   </Link>
                   <Link to="/employer-dashboard" className="btn btn-secondary btn-sm">
                     <LayoutDashboard size={16} /> Admin Portal
@@ -60,7 +74,7 @@ export const Navbar = () => {
                     e.target.onerror = null;
                     e.target.src = defaultAvatar;
                   }}
-                  style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', background: '#eff6ff' }}
+                  style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', background: '#eff6ff', border: '1px solid var(--border-subtle)' }}
                 />
                 <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)' }}>
                   {user.role === 'employer' ? 'Admin' : 'Applicant'}
