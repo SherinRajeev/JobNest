@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Briefcase, Users, PlusCircle, Clock, Phone, UserCheck, ShieldCheck } from 'lucide-react';
+import { Briefcase, Users, PlusCircle, Clock, Phone, UserCheck } from 'lucide-react';
 import API from '../services/api';
 
 export const EmployerDashboard = () => {
@@ -53,9 +53,9 @@ export const EmployerDashboard = () => {
         <div className="card-glass">
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
             <span>Total Applicants</span>
-            <Users size={20} color="var(--saffron)" />
+            <Users size={20} color="var(--primary)" />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800 }}>{applications.length}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--primary)' }}>{applications.length}</div>
         </div>
 
         <div className="card-glass">
@@ -69,9 +69,9 @@ export const EmployerDashboard = () => {
         <div className="card-glass">
           <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>
             <span>Hired Candidates</span>
-            <UserCheck size={20} color="#10b981" />
+            <UserCheck size={20} color="var(--emerald)" />
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: '#10b981' }}>{hiredCount}</div>
+          <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--emerald)' }}>{hiredCount}</div>
         </div>
       </div>
 
@@ -112,11 +112,11 @@ export const EmployerDashboard = () => {
                     </td>
                     <td>
                       <div style={{ fontWeight: 600 }}>{app.job?.title || 'Part-Time Shift'}</div>
-                      <div style={{ fontSize: '0.78rem', color: '#34d399' }}>₹{app.job?.hourlyRate || '250'}/hr</div>
+                      <div style={{ fontSize: '0.78rem', color: 'var(--emerald)' }}>₹{app.job?.hourlyRate || '250'}/hr</div>
                     </td>
                     <td>
                       <div style={{ fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                        <Phone size={13} color="var(--saffron)" /> {app.phone || app.applicant?.phone || 'N/A'}
+                        <Phone size={13} color="var(--primary)" /> {app.phone || app.applicant?.phone || 'N/A'}
                       </div>
                     </td>
                     <td style={{ maxWidth: '240px' }}>

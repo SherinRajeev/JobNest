@@ -13,7 +13,7 @@ export const Register = () => {
     password: '',
     role: 'seeker',
     phone: '',
-    location: 'Indiranagar, Bengaluru',
+    location: 'Marine Drive, Kochi, Kerala',
     bio: ''
   });
 
@@ -43,7 +43,7 @@ export const Register = () => {
       <div className="card-glass" style={{ padding: '2.25rem' }}>
         <h1 style={{ fontSize: '1.8rem', textAlign: 'center', marginBottom: '0.5rem' }}>Join <span className="gradient-text">JobNest</span></h1>
         <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.75rem' }}>
-          Create an account as an applicant or business recruiter.
+          Create an account as an applicant or business recruiter in Kochi.
         </p>
 
         {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
@@ -122,10 +122,10 @@ export const Register = () => {
             </div>
 
             <div className="form-group">
-              <label className="form-label">Location / Neighborhood</label>
+              <label className="form-label">Location / Area</label>
               <input
                 type="text"
-                placeholder="e.g. Indiranagar, Bengaluru"
+                placeholder="e.g. Marine Drive, Kochi"
                 value={formData.location}
                 onChange={e => setFormData({ ...formData, location: e.target.value })}
                 className="form-control"
@@ -139,7 +139,7 @@ export const Register = () => {
         </form>
 
         <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-          Already registered? <Link to="/login" style={{ color: 'var(--saffron)', fontWeight: 600 }}>Sign In</Link>
+          Already registered? <Link to="/login" style={{ color: 'var(--primary)', fontWeight: 600 }}>Sign In</Link>
         </div>
       </div>
     </div>

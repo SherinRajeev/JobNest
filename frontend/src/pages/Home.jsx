@@ -26,8 +26,8 @@ export const Home = () => {
 
   const categories = [
     { title: 'Cafe & Barista', icon: Coffee, count: '12 Shifts Nearby', color: 'var(--amber)' },
-    { title: 'Retail & Store', icon: ShoppingBag, count: '18 Shifts Nearby', color: 'var(--saffron)' },
-    { title: 'Delivery & Logistics', icon: Truck, count: '24 Shifts Nearby', color: '#059669' },
+    { title: 'Retail & Store', icon: ShoppingBag, count: '18 Shifts Nearby', color: 'var(--primary)' },
+    { title: 'Delivery & Logistics', icon: Truck, count: '24 Shifts Nearby', color: 'var(--emerald)' },
     { title: 'Tutoring & Education', icon: GraduationCap, count: '9 Shifts Nearby', color: '#0284c7' },
     { title: 'Event Staff', icon: Calendar, count: '15 Shifts Nearby', color: '#e11d48' },
     { title: 'Office & Admin', icon: Building, count: '7 Shifts Nearby', color: '#7c3aed' }
@@ -50,7 +50,7 @@ export const Home = () => {
         {/* Hero Search Bar */}
         <form onSubmit={handleSearchSubmit} className="search-bar-hero">
           <div className="search-input-group">
-            <Search size={20} color="var(--saffron)" />
+            <Search size={20} color="var(--primary)" />
             <input
               type="text"
               placeholder="Search Marine Drive, Edappally, Kakkanad, InfoPark, Fort Kochi..."
@@ -60,7 +60,7 @@ export const Home = () => {
           </div>
           <div className="search-divider" />
           <div className="search-input-group" style={{ maxWidth: '220px' }}>
-            <MapPin size={20} color="#059669" />
+            <MapPin size={20} color="var(--emerald)" />
             <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>Within {filters.maxDistance} km</span>
           </div>
           <button type="submit" className="btn btn-primary" style={{ padding: '0.85rem 1.8rem', borderRadius: '18px' }}>

@@ -69,7 +69,7 @@ export const JobModal = ({ job, onClose }) => {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', background: 'var(--bg-glass)', border: '1px solid var(--border-subtle)', padding: '1rem', borderRadius: 'var(--radius-md)', margin: '1rem 0' }}>
           <div>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Hourly Rate</div>
-            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#34d399' }}>₹{job.hourlyRate}/hr</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--emerald)' }}>₹{job.hourlyRate}/hr</div>
           </div>
           <div>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Shift Timing</div>
@@ -92,7 +92,7 @@ export const JobModal = ({ job, onClose }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
               {job.requirements.map((req, idx) => (
                 <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-                  <CheckCircle2 size={14} color="var(--saffron)" /> {req}
+                  <CheckCircle2 size={14} color="var(--primary)" /> {req}
                 </div>
               ))}
             </div>

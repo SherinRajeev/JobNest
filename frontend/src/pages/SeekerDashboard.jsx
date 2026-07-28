@@ -58,10 +58,10 @@ export const SeekerDashboard = () => {
             background: 'none',
             border: 'none',
             padding: '0.85rem 1.25rem',
-            color: activeTab === 'applications' ? 'var(--saffron)' : 'var(--text-muted)',
+            color: activeTab === 'applications' ? 'var(--primary)' : 'var(--text-muted)',
             fontWeight: 600,
             fontSize: '1rem',
-            borderBottom: activeTab === 'applications' ? '2px solid var(--saffron)' : 'none',
+            borderBottom: activeTab === 'applications' ? '2px solid var(--primary)' : 'none',
             cursor: 'pointer'
           }}
         >
@@ -73,10 +73,10 @@ export const SeekerDashboard = () => {
             background: 'none',
             border: 'none',
             padding: '0.85rem 1.25rem',
-            color: activeTab === 'bookmarks' ? 'var(--saffron)' : 'var(--text-muted)',
+            color: activeTab === 'bookmarks' ? 'var(--primary)' : 'var(--text-muted)',
             fontWeight: 600,
             fontSize: '1rem',
-            borderBottom: activeTab === 'bookmarks' ? '2px solid var(--saffron)' : 'none',
+            borderBottom: activeTab === 'bookmarks' ? '2px solid var(--primary)' : 'none',
             cursor: 'pointer'
           }}
         >
@@ -118,7 +118,7 @@ export const SeekerDashboard = () => {
                       </div>
                     </td>
                     <td>
-                      <span style={{ fontWeight: 700, color: '#34d399' }}>₹{app.job?.hourlyRate || '250'}/hr</span>
+                      <span style={{ fontWeight: 700, color: 'var(--emerald)' }}>₹{app.job?.hourlyRate || '250'}/hr</span>
                     </td>
                     <td style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                       {new Date(app.createdAt).toLocaleDateString()}

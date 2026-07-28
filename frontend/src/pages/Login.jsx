@@ -77,10 +77,10 @@ export const Login = () => {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
             <button type="button" onClick={handleApplicantLogin} className="btn btn-secondary btn-sm" style={{ fontSize: '0.82rem' }}>
-              <UserCheck size={14} color="var(--saffron)" /> Applicant Login
+              <UserCheck size={14} color="var(--primary)" /> Applicant Login
             </button>
             <button type="button" onClick={handleAdminLogin} className="btn btn-secondary btn-sm" style={{ fontSize: '0.82rem' }}>
-              <ShieldCheck size={14} color="#10b981" /> Admin Login
+              <ShieldCheck size={14} color="var(--emerald)" /> Admin Login
             </button>
           </div>
         </div>
@@ -116,7 +116,7 @@ export const Login = () => {
         </form>
 
         <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-          Don't have an account? <Link to="/register" style={{ color: 'var(--saffron)', fontWeight: 600 }}>Create Account</Link>
+          Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600 }}>Create Account</Link>
         </div>
       </div>
     </div>

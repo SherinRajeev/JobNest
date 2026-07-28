@@ -28,12 +28,12 @@ export const JobCard = ({ job, onViewDetails }) => {
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              color: isSaved ? '#f59e0b' : 'var(--text-dim)',
+              color: isSaved ? '#d97706' : 'var(--text-dim)',
               transition: 'var(--transition)'
             }}
             title={isSaved ? 'Remove Bookmark' : 'Save Job'}
           >
-            <Bookmark size={20} fill={isSaved ? '#f59e0b' : 'none'} />
+            <Bookmark size={20} fill={isSaved ? '#d97706' : 'none'} />
           </button>
         </div>
 
@@ -48,7 +48,7 @@ export const JobCard = ({ job, onViewDetails }) => {
 
         <div className="job-meta-row">
           <div className="job-meta-item" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <MapPin size={15} color="var(--saffron)" />
+            <MapPin size={15} color="var(--primary)" />
             <span>{job.locationName} ({job.distanceKm || 1.2} km away)</span>
           </div>
         </div>
