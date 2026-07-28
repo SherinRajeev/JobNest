@@ -27,7 +27,7 @@ const seedData = async () => {
       role: 'seeker',
       phone: '+91 98765 43210',
       location: 'Kottayam Town, Kerala',
-      bio: 'College student in Kottayam looking for flexible weekend & evening part-time shifts.',
+      bio: 'College student looking for flexible weekend & evening part-time shifts.',
       avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150'
     });
 
@@ -38,7 +38,7 @@ const seedData = async () => {
       role: 'employer',
       phone: '+91 91234 56789',
       location: 'Kanjikuzhy, Kottayam',
-      bio: 'Recruiter at Local Business & Retail Networks in Kottayam Town.',
+      bio: 'Recruiter at Local Business & Retail Networks in Kerala.',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150'
     });
 
@@ -212,6 +212,108 @@ const seedData = async () => {
         perks: ['Creative teaching environment', 'Teaching certificate'],
         positionsAvailable: 2,
         status: 'active'
+      },
+      {
+        title: 'Hypermarket Evening Sales Representative',
+        company: 'LuLu Mall Hypermarket',
+        employer: employer._id,
+        category: 'Retail & Store',
+        hourlyRate: 240,
+        shiftTiming: 'Evening (6PM - 11PM)',
+        hoursPerWeek: 15,
+        locationName: 'LuLu Mall, Edappally, Kochi',
+        coordinates: { lat: 10.0270, lng: 76.3080 },
+        distanceKm: 55.4,
+        description: 'Assist shoppers during evening hours, manage shelf stocking, and handle billing counter support at LuLu Mall Kochi.',
+        requirements: ['Punctual & customer friendly', 'Basic POS billing knowledge'],
+        perks: ['Store discount', 'Late shift cab allowance'],
+        positionsAvailable: 4,
+        status: 'active'
+      },
+      {
+        title: 'Co-Working Desk & Community Assistant',
+        company: 'InfoPark Startup Hub',
+        employer: employer._id,
+        category: 'Office & Admin',
+        hourlyRate: 290,
+        shiftTiming: 'Morning (8AM - 1PM)',
+        hoursPerWeek: 15,
+        locationName: 'InfoPark Phase 1, Kakkanad, Kochi',
+        coordinates: { lat: 10.0120, lng: 76.3630 },
+        distanceKm: 58.2,
+        description: 'Manage community front desk, coordinate tech startup meeting room bookings, and assist office admin operations.',
+        requirements: ['Basic computer literacy', 'Good communication skills'],
+        perks: ['Free Wi-Fi co-working access', 'Unlimited coffee'],
+        positionsAvailable: 2,
+        status: 'active'
+      },
+      {
+        title: 'Espresso Barista & Store Associate',
+        company: 'Third Wave Coffee Roasters',
+        employer: employer._id,
+        category: 'Cafe & Barista',
+        hourlyRate: 260,
+        shiftTiming: 'Weekend Special',
+        hoursPerWeek: 16,
+        locationName: 'MG Road, Ernakulam, Kochi',
+        coordinates: { lat: 9.9790, lng: 76.2750 },
+        distanceKm: 51.0,
+        description: 'Craft gourmet espresso drinks, greet customers, and maintain cafe counters at MG Road Kochi outlet.',
+        requirements: ['Coffee preparation passion', 'Friendly customer interaction'],
+        perks: ['Free coffee per shift', 'Performance tips'],
+        positionsAvailable: 3,
+        status: 'active'
+      },
+      {
+        title: 'Retail Customer Service Associate',
+        company: 'LuLu Mall Trivandrum',
+        employer: employer._id,
+        category: 'Retail & Store',
+        hourlyRate: 230,
+        shiftTiming: 'Weekend Special',
+        hoursPerWeek: 14,
+        locationName: 'Akkulam, Thiruvananthapuram',
+        coordinates: { lat: 8.5241, lng: 76.8944 },
+        distanceKm: 124.5,
+        description: 'Assist visitors with product inquiries and store navigation at LuLu Mall Trivandrum.',
+        requirements: ['Good customer interaction', 'Flexible weekend hours'],
+        perks: ['Employee discount', 'Travel allowance'],
+        positionsAvailable: 3,
+        status: 'active'
+      },
+      {
+        title: 'Exhibition & Cultural Fest Support Staff',
+        company: 'Thrissur Pooram Fest Committee',
+        employer: employer._id,
+        category: 'Event Staff',
+        hourlyRate: 360,
+        shiftTiming: 'Weekend Special',
+        hoursPerWeek: 12,
+        locationName: 'Swaraj Round, Thrissur',
+        coordinates: { lat: 10.5276, lng: 76.2144 },
+        distanceKm: 108.0,
+        description: 'Assist fest committee with ticketing entry control, VIP lounge support, and venue crowd guidance.',
+        requirements: ['Active personality', 'Good communication in Malayalam'],
+        perks: ['Event crew pass', 'Catered food provided'],
+        positionsAvailable: 6,
+        status: 'active'
+      },
+      {
+        title: 'Fashion Store Sales Associate',
+        company: 'Focus Mall Retails',
+        employer: employer._id,
+        category: 'Retail & Store',
+        hourlyRate: 220,
+        shiftTiming: 'Flexible',
+        hoursPerWeek: 15,
+        locationName: 'Rajaji Road, Kozhikode',
+        coordinates: { lat: 11.2588, lng: 75.7804 },
+        distanceKm: 202.0,
+        description: 'Assist retail shoppers, restock floor displays, and process counter checkout transactions at Focus Mall.',
+        requirements: ['Punctual & helpful attitude', 'Basic billing skills'],
+        perks: ['Store discount', 'Flexible shift rosters'],
+        positionsAvailable: 3,
+        status: 'active'
       }
     ]);
 
@@ -224,7 +326,7 @@ const seedData = async () => {
       status: 'Applied'
     });
 
-    console.log('Database seeded with 10 Kottayam business job listings!');
+    console.log('Database seeded with 16 Kerala business job listings!');
     process.exit(0);
   } catch (error) {
     console.error('Database seeding failed:', error.message);

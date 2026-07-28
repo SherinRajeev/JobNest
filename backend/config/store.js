@@ -30,7 +30,7 @@ export const memoryStore = {
       coordinates: { lat: KOTTAYAM_LAT, lng: KOTTAYAM_LNG },
       bio: 'College student looking for flexible weekend & evening part-time shifts.',
       avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150',
-      savedJobs: ['job_1', 'job_3']
+      savedJobs: ['job_1', 'job_3', 'job_7']
     },
     {
       _id: 'usr_employer_1',
@@ -39,14 +39,14 @@ export const memoryStore = {
       password: '$2a$10$wN9F/9t6ZJ0d4aZ0g0g0g.1234567890abcdef',
       role: 'employer',
       phone: '+91 91234 56789',
-      location: 'Panampilly Nagar, Kochi',
+      location: 'Kanjikuzhy, Kottayam',
       bio: 'Recruiter at Local Business & Retail Networks in Kerala.',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150',
       savedJobs: []
     }
   ],
   jobs: [
-    // Kottayam Town Listings
+    // 1. Kottayam ICH
     {
       _id: 'job_1',
       title: 'Weekend Coffee Barista & Billing Staff',
@@ -66,6 +66,7 @@ export const memoryStore = {
       status: 'active',
       createdAt: new Date().toISOString()
     },
+    // 2. Kottayam Pothys
     {
       _id: 'job_2',
       title: 'Festival Season Sales Associate',
@@ -85,6 +86,7 @@ export const memoryStore = {
       status: 'active',
       createdAt: new Date().toISOString()
     },
+    // 3. Kottayam Swiggy
     {
       _id: 'job_3',
       title: 'Part-Time Delivery Partner (Bike/Scooter)',
@@ -104,6 +106,7 @@ export const memoryStore = {
       status: 'active',
       createdAt: new Date().toISOString()
     },
+    // 4. Kottayam Brilliant Coaching
     {
       _id: 'job_4',
       title: 'Class 10-12 Physics & Maths Instructor',
@@ -123,6 +126,7 @@ export const memoryStore = {
       status: 'active',
       createdAt: new Date().toISOString()
     },
+    // 5. Kottayam Nagampadam Fest
     {
       _id: 'job_5',
       title: 'Trade Fair & Exhibition Event Crew',
@@ -142,6 +146,7 @@ export const memoryStore = {
       status: 'active',
       createdAt: new Date().toISOString()
     },
+    // 6. Kottayam Collectorate Help Desk
     {
       _id: 'job_6',
       title: 'Evening Patient Reception & Help Desk Staff',
@@ -161,17 +166,97 @@ export const memoryStore = {
       status: 'active',
       createdAt: new Date().toISOString()
     },
-    // Kochi Listings
+    // 7. Kottayam Seematti Silks
     {
       _id: 'job_7',
-      title: 'Hypermarket Evening Sales Associate',
+      title: 'Festival Garment & Counter Assistant',
+      company: 'Seematti Silks Kottayam',
+      employer: 'usr_employer_1',
+      category: 'Retail & Store',
+      hourlyRate: 230,
+      shiftTiming: 'Evening (6PM - 11PM)',
+      hoursPerWeek: 15,
+      locationName: 'KK Road, Central Junction, Kottayam Town',
+      coordinates: { lat: 9.5910, lng: 76.5230 },
+      distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 9.5910, 76.5230),
+      description: 'Assist customer floor queries, fold and organize saree/garment displays, and support store cash counter staff during busy evening hours.',
+      requirements: ['Punctual & active', 'Friendly customer interaction'],
+      perks: ['Store discount', 'Late evening drop allowance'],
+      positionsAvailable: 4,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    },
+    // 8. Kottayam Baker's Oven
+    {
+      _id: 'job_8',
+      title: 'Evening Kitchen Crew & Dispatch Support',
+      company: "Baker's Oven & Cafe",
+      employer: 'usr_employer_1',
+      category: 'Cafe & Barista',
+      hourlyRate: 240,
+      shiftTiming: 'Evening (6PM - 11PM)',
+      hoursPerWeek: 14,
+      locationName: 'Kallarackal Bazaar, Kottayam Town',
+      coordinates: { lat: 9.5935, lng: 76.5245 },
+      distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 9.5935, 76.5245),
+      description: 'Assist bakery chefs with pastry packing, manage takeout order dispatching, and maintain clean kitchen counters.',
+      requirements: ['Food safety & hygiene awareness', 'Ability to work evening shifts'],
+      perks: ['Complimentary bakery snacks', 'Flexible shift scheduling'],
+      positionsAvailable: 2,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    },
+    // 9. Kottayam Library
+    {
+      _id: 'job_9',
+      title: 'Cataloging & Library Desk Assistant',
+      company: 'Kottayam Public Library',
+      employer: 'usr_employer_1',
+      category: 'Office & Admin',
+      hourlyRate: 260,
+      shiftTiming: 'Flexible',
+      hoursPerWeek: 12,
+      locationName: 'Public Library Road, Shastri Nagar, Kottayam',
+      coordinates: { lat: 9.5925, lng: 76.5215 },
+      distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 9.5925, 76.5215),
+      description: 'Organize book archives, issue member borrowing cards, catalog digital records, and maintain quiet reading hall decorum.',
+      requirements: ['Basic computer entry', 'Organized and meticulous manner'],
+      perks: ['Free library membership', 'Quiet study environment'],
+      positionsAvailable: 1,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    },
+    // 10. Kottayam KidsAcademy
+    {
+      _id: 'job_10',
+      title: 'Primary English & Drawing Tutor',
+      company: 'KidsAcademy Learning Corner',
+      employer: 'usr_employer_1',
+      category: 'Tutoring & Education',
+      hourlyRate: 380,
+      shiftTiming: 'Afternoon (1PM - 6PM)',
+      hoursPerWeek: 10,
+      locationName: 'Good Shepherd Road, Kottayam',
+      coordinates: { lat: 9.5880, lng: 76.5270 },
+      distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 9.5880, 76.5270),
+      description: 'Conduct creative English reading, phonics, and basic drawing classes for primary school children (Classes 1-5).',
+      requirements: ['Patience with young kids', 'Good English handwriting & fluency'],
+      perks: ['Creative teaching environment', 'Teaching certificate'],
+      positionsAvailable: 2,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    },
+    // 11. LuLu Mall Kochi
+    {
+      _id: 'job_11',
+      title: 'Hypermarket Evening Sales Representative',
       company: 'LuLu Mall Hypermarket',
       employer: 'usr_employer_1',
       category: 'Retail & Store',
       hourlyRate: 240,
       shiftTiming: 'Evening (6PM - 11PM)',
       hoursPerWeek: 15,
-      locationName: 'Edappally, Kochi, Kerala',
+      locationName: 'LuLu Mall, Edappally, Kochi',
       coordinates: { lat: 10.0270, lng: 76.3080 },
       distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 10.0270, 76.3080),
       description: 'Assist shoppers during evening hours, manage shelf stocking, and handle billing counter support at LuLu Mall Kochi.',
@@ -181,16 +266,17 @@ export const memoryStore = {
       status: 'active',
       createdAt: new Date().toISOString()
     },
+    // 12. InfoPark Kakkanad
     {
-      _id: 'job_8',
-      title: 'Co-Working Community Desk Executive',
-      company: 'InfoPark Co-Working Hub',
+      _id: 'job_12',
+      title: 'Co-Working Desk & Community Assistant',
+      company: 'InfoPark Startup Hub',
       employer: 'usr_employer_1',
       category: 'Office & Admin',
       hourlyRate: 290,
       shiftTiming: 'Morning (8AM - 1PM)',
       hoursPerWeek: 15,
-      locationName: 'Kakkanad InfoPark, Kochi',
+      locationName: 'InfoPark Phase 1, Kakkanad, Kochi',
       coordinates: { lat: 10.0120, lng: 76.3630 },
       distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 10.0120, 76.3630),
       description: 'Manage community front desk, coordinate tech startup meeting room bookings, and assist office admin operations.',
@@ -200,10 +286,30 @@ export const memoryStore = {
       status: 'active',
       createdAt: new Date().toISOString()
     },
-    // Thiruvananthapuram Listings
+    // 13. Third Wave Coffee MG Road
     {
-      _id: 'job_9',
-      title: 'Retail Brand Customer Assistant',
+      _id: 'job_13',
+      title: 'Espresso Barista & Store Associate',
+      company: 'Third Wave Coffee Roasters',
+      employer: 'usr_employer_1',
+      category: 'Cafe & Barista',
+      hourlyRate: 260,
+      shiftTiming: 'Weekend Special',
+      hoursPerWeek: 16,
+      locationName: 'MG Road, Ernakulam, Kochi',
+      coordinates: { lat: 9.9790, lng: 76.2750 },
+      distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 9.9790, 76.2750),
+      description: 'Craft gourmet espresso drinks, greet customers, and maintain cafe counters at MG Road Kochi outlet.',
+      requirements: ['Coffee preparation passion', 'Friendly customer interaction'],
+      perks: ['Free coffee per shift', 'Performance tips'],
+      positionsAvailable: 3,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    },
+    // 14. LuLu Mall Trivandrum
+    {
+      _id: 'job_14',
+      title: 'Retail Customer Service Associate',
       company: 'LuLu Mall Trivandrum',
       employer: 'usr_employer_1',
       category: 'Retail & Store',
@@ -213,30 +319,50 @@ export const memoryStore = {
       locationName: 'Akkulam, Thiruvananthapuram',
       coordinates: { lat: 8.5241, lng: 76.8944 },
       distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 8.5241, 76.8944),
-      description: 'Assist visitors with product queries and store navigation at LuLu Mall Trivandrum.',
+      description: 'Assist visitors with product inquiries and store navigation at LuLu Mall Trivandrum.',
       requirements: ['Good customer interaction', 'Flexible weekend hours'],
       perks: ['Employee discount', 'Travel allowance'],
       positionsAvailable: 3,
       status: 'active',
       createdAt: new Date().toISOString()
     },
-    // Kozhikode & Thrissur Listings
+    // 15. Thrissur Pooram Event Crew
     {
-      _id: 'job_10',
-      title: 'Tech Fest & Expo Support Crew',
-      company: 'Focus Mall Event Committee',
+      _id: 'job_15',
+      title: 'Exhibition & Cultural Fest Support Staff',
+      company: 'Thrissur Pooram Fest Committee',
       employer: 'usr_employer_1',
       category: 'Event Staff',
-      hourlyRate: 320,
+      hourlyRate: 360,
       shiftTiming: 'Weekend Special',
       hoursPerWeek: 12,
+      locationName: 'Swaraj Round, Thrissur',
+      coordinates: { lat: 10.5276, lng: 76.2144 },
+      distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 10.5276, 76.2144),
+      description: 'Assist fest committee with ticketing entry control, VIP lounge support, and venue crowd guidance.',
+      requirements: ['Active personality', 'Good communication in Malayalam'],
+      perks: ['Event crew pass', 'Catered food provided'],
+      positionsAvailable: 6,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    },
+    // 16. Kozhikode Focus Mall
+    {
+      _id: 'job_16',
+      title: 'Fashion Store Sales Associate',
+      company: 'Focus Mall Retails',
+      employer: 'usr_employer_1',
+      category: 'Retail & Store',
+      hourlyRate: 220,
+      shiftTiming: 'Flexible',
+      hoursPerWeek: 15,
       locationName: 'Rajaji Road, Kozhikode',
       coordinates: { lat: 11.2588, lng: 75.7804 },
       distanceKm: calculateDistance(KOTTAYAM_LAT, KOTTAYAM_LNG, 11.2588, 75.7804),
-      description: 'Support event registration, ticketing, and hall management during Kozhikode Tech & Trade Fest.',
-      requirements: ['Active personality', 'Malayalam & English fluency'],
-      perks: ['Event crew pass', 'Catered meals'],
-      positionsAvailable: 5,
+      description: 'Assist retail shoppers, restock floor displays, and process counter checkout transactions at Focus Mall.',
+      requirements: ['Punctual & helpful attitude', 'Basic billing skills'],
+      perks: ['Store discount', 'Flexible shift rosters'],
+      positionsAvailable: 3,
       status: 'active',
       createdAt: new Date().toISOString()
     }
@@ -246,7 +372,7 @@ export const memoryStore = {
       _id: 'app_1',
       job: 'job_1',
       applicant: 'usr_seeker_1',
-      coverNote: 'I live near KSRTC Bus Stand and available for weekend shifts.',
+      coverNote: 'I live near KSRTC Bus Stand in Kottayam Town and available for weekend shifts.',
       availability: 'Immediate (Saturdays & Sundays)',
       phone: '+91 98765 43210',
       status: 'Applied',
