@@ -13,12 +13,12 @@ export const MapView = ({ jobs, onSelectJob }) => {
       mapInstanceRef.current = null;
     }
 
-    // Kottayam Town Center
-    const kottayamCenter = [9.5916, 76.5222];
+    // Default center: Kottayam Town, Kerala
+    const defaultCenter = [9.5916, 76.5222];
 
     // Initialize Leaflet Map
     const map = window.L.map(mapContainerRef.current, {
-      center: kottayamCenter,
+      center: defaultCenter,
       zoom: 13,
       zoomControl: true
     });
@@ -30,46 +30,51 @@ export const MapView = ({ jobs, onSelectJob }) => {
       attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    // Explicit Bounds array to fit all job pins
     const bounds = window.L.latLngBounds();
 
-    // 1. User Location Marker (Marine Drive / Kottayam Center)
-    const userMarkerHtml = `
-      <div style="
-        width: 24px;
-        height: 24px;
-        border-radius: 50%;
-        background: #059669;
-        border: 3px solid #ffffff;
-        box-shadow: 0 0 14px rgba(5,150,105,0.8);
-      "></div>
-    `;
-    const userIcon = window.L.divIcon({
-      className: 'user-pin-custom',
-      html: userMarkerHtml,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12]
-    });
+    // Try browser geolocation to center visitor automatically if permitted
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const userLat = pos.coords.latitude;
+          const userLng = pos.coords.longitude;
+          const userLatLng = [userLat, userLng];
 
-    const userMarker = window.L.marker(kottayamCenter, { icon: userIcon }).addTo(map);
-    userMarker.bindPopup('<b>Your Location</b><br/>Kottayam Town Center');
-    bounds.extend(kottayamCenter);
+          const userIcon = window.L.divIcon({
+            className: 'user-pin-custom',
+            html: `<div style="width: 24px; height: 24px; border-radius: 50%; background: #059669; border: 3px solid #ffffff; box-shadow: 0 0 14px rgba(5,150,105,0.8);"></div>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+          });
 
-    // Sample Kottayam Coordinates for fallbacks
-    const kottayamLocations = [
-      [9.5916, 76.5330], // Kanjikuzhy
-      [9.5890, 76.5210], // Thirunakkara
-      [9.5950, 76.5260], // Collectorate
-      [9.5980, 76.5180], // CMS College
-      [9.5850, 76.5290], // Nehru Stadium
-      [9.6010, 76.5280]  // Nagampadam
-    ];
+          window.L.marker(userLatLng, { icon: userIcon })
+            .addTo(map)
+            .bindPopup('<b>Your Live Location</b>');
 
-    // 2. Render Job Markers
-    jobs.forEach((job, idx) => {
-      const defaultCoord = kottayamLocations[idx % kottayamLocations.length];
-      const lat = job.coordinates?.lat || defaultCoord[0];
-      const lng = job.coordinates?.lng || defaultCoord[1];
+          bounds.extend(userLatLng);
+        },
+        () => {
+          // Fallback to Kottayam Center
+          const userIcon = window.L.divIcon({
+            className: 'user-pin-custom',
+            html: `<div style="width: 24px; height: 24px; border-radius: 50%; background: #059669; border: 3px solid #ffffff; box-shadow: 0 0 14px rgba(5,150,105,0.8);"></div>`,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+          });
+
+          window.L.marker(defaultCenter, { icon: userIcon })
+            .addTo(map)
+            .bindPopup('<b>Your Location</b><br/>Kottayam Town Center');
+
+          bounds.extend(defaultCenter);
+        }
+      );
+    }
+
+    // Render Job Pin Markers
+    jobs.forEach((job) => {
+      const lat = job.coordinates?.lat || 9.5916;
+      const lng = job.coordinates?.lng || 76.5222;
       const jobLatLng = [lat, lng];
 
       bounds.extend(jobLatLng);
@@ -142,7 +147,6 @@ export const MapView = ({ jobs, onSelectJob }) => {
       map.fitBounds(bounds, { padding: [50, 50] });
     }
 
-    // Invalidate size to handle flex layout resizing
     setTimeout(() => {
       map.invalidateSize();
     }, 200);
@@ -160,7 +164,7 @@ export const MapView = ({ jobs, onSelectJob }) => {
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%', zIndex: 1 }} />
       <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000, background: '#ffffff', border: '1px solid var(--border-subtle)', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, color: '#0f172a', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', gap: '6px' }}>
         <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669' }}></span>
-        Real OpenStreetMap • Kottayam Town, Kerala ({jobs.length} jobs pins active)
+        Real-Time OpenStreetMap ({jobs.length} recruiter pins active)
       </div>
     </div>
   );

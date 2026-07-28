@@ -38,10 +38,10 @@ export const Home = () => {
       {/* Hero Section */}
       <section className="hero-section">
         <h1 className="hero-title">
-          Find Part-Time <span className="gradient-text">Shifts & Recruiter Jobs</span> Near You In Kottayam Town
+          Find Part-Time <span className="gradient-text">Shifts & Recruiter Jobs</span> Near You
         </h1>
         <p className="hero-subtitle">
-          JobNest connects students, freelancers, and shift workers in Kottayam with nearby stores, cafes, tuition hubs, and recruiters offering flexible hourly pay.
+          JobNest connects students, freelancers, and shift workers across Kerala with nearby stores, cafes, tutoring centers, and recruiters offering flexible hourly pay.
         </p>
 
         {/* Hero Search Bar */}
@@ -50,7 +50,7 @@ export const Home = () => {
             <Search size={20} color="var(--primary)" />
             <input
               type="text"
-              placeholder="Search Kanjikuzhy, Thirunakkara, CMS College Road, Nagampadam, Collectorate..."
+              placeholder="Search by city, store name, or shift keyword (e.g. Kottayam, Kochi, Trivandrum)..."
               value={filters.search}
               onChange={e => setFilters({ ...filters, search: e.target.value })}
             />
@@ -70,8 +70,8 @@ export const Home = () => {
       <section style={{ margin: '3rem 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem' }}>Kottayam Town Neighborhood <span className="gradient-text">Shift Map</span></h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem' }}>Live recruiters & active openings centered around your location in Kottayam Town, Kerala.</p>
+            <h2 style={{ fontSize: '1.75rem' }}>Neighborhood <span className="gradient-text">Shift Map</span></h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem' }}>Live recruiters & active openings centered around your location.</p>
           </div>
           <button onClick={() => navigate('/jobs')} className="btn btn-secondary btn-sm">
             View Map & Filters
@@ -110,8 +110,8 @@ export const Home = () => {
       <section style={{ margin: '4rem 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem' }}>Active Openings <span className="gradient-text">Near Kottayam Town</span></h2>
-            <p style={{ color: 'var(--text-muted)' }}>Apply directly to recruiters in Kottayam Town and nearby areas.</p>
+            <h2 style={{ fontSize: '1.75rem' }}>Active Openings <span className="gradient-text">Near You</span></h2>
+            <p style={{ color: 'var(--text-muted)' }}>Apply directly to recruiters in your neighborhood.</p>
           </div>
           <button onClick={() => navigate('/jobs')} className="btn btn-primary btn-sm">
             Browse All ({jobs.length})
