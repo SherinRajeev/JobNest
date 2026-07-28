@@ -3,58 +3,44 @@
 ## 📄 Project Information
 
 - **Project Title**: JobNest — Your Gateway to Nearby Part-Time Jobs
-- **Team Member Names**: [Your Name / Team Members]
-- **GitHub Repository URL**: `https://github.com/your-username/JobNest.git`
-- **Demo Video Link**: `[Insert Your Loom / YouTube Demo Link Here]`
+- **Team Member Name(s)**: T_N_X (Sherin Rajeev)
+- **GitHub Repository URL**: https://github.com/SherinRajeev/JobNest.git
+- **Demo Video Link**: [Insert Your 5-Minute Loom / YouTube Video Link Here]
 - **Submission Date**: July 28, 2026
 
 ---
 
-## 🚀 Step-by-Step GitHub Repository Push Instructions
-
-Follow these exact terminal steps to push this complete project to your personal GitHub account:
+## 🚀 GitHub Repository Push Instructions
 
 ```bash
-# 1. Open terminal inside the JobNest directory:
 cd C:\Users\sheri\.gemini\antigravity\scratch\JobNest
 
-# 2. Initialize git repository (if not initialized):
-git init
+# Link to GitHub remote repository:
+git remote add origin https://github.com/SherinRajeev/JobNest.git
 
-# 3. Add all project files:
-git add .
-
-# 4. Commit project implementation:
-git commit -m "Complete MERN Project Implementation: JobNest - Gateway to Nearby Part-Time Jobs"
-
-# 5. Link to your GitHub repository (replace with your repo URL):
-git remote add origin https://github.com/your-username/JobNest.git
-
-# 6. Push to main branch:
+# Set main branch and push:
 git branch -M main
 git push -u origin main
 ```
 
 ---
 
-## 📹 5-Minute Demo Video Recording Script Outline
+## 📹 5-Minute Demo Video Script & Outline
 
-Use this structured script to record your <= 5 minute demo video:
-
-| Time | Topic | Video Screen Focus & Narration |
+| Section & Time | Screen Focus | Narration Script |
 | :--- | :--- | :--- |
-| **0:00 - 0:45** | **Introduction & Purpose** | Show Homepage hero section. Explain why JobNest exists (helping students/freelancers quickly locate nearby flexible part-time shifts). |
-| **0:45 - 2:00** | **Seeker Experience & Features** | Demonstrate job search, distance slider (1 km - 25 km), Category filters, Map Radar view, job card click modal, and 1-click application submission. |
-| **2:00 - 3:15** | **Employer Experience & Posting** | Log in as Employer (`employer@jobnest.com`). Show Employer Hiring Portal, candidate status management (Shortlist/Hire), and creating a new part-time shift listing. |
-| **3:15 - 4:15** | **Architecture & MERN Stack** | Briefly highlight codebase structure: Express Node API server, MongoDB Mongoose schema models, React 18 Vite frontend, JWT auth, and dark glassmorphic CSS design system. |
-| **4:15 - 5:00** | **Conclusion & Submission Summary** | Summarize project completeness, zero build errors, and wrap up. |
+| **0:00 - 0:45** | **Hero & Purpose** | Show JobNest landing page. Explain how JobNest bridges students and part-time workers with nearby local shift opportunities. |
+| **0:45 - 2:00** | **Seeker Workflow** | Demonstrate distance slider (1–25 km), Category filters (Barista, Retail, Delivery, Tutor), Map Radar View, and 1-click application submission. |
+| **2:00 - 3:15** | **Employer Workflow** | Log in as Employer (`employer@jobnest.com`). Show Hiring Portal, candidate status controls (*Shortlist*, *Hire*, *Reject*), and posting a new part-time shift. |
+| **3:15 - 4:15** | **MERN Architecture** | Explain Node/Express REST API, MongoDB Mongoose schema models, React 18 Vite frontend, JWT auth, and dark glassmorphic CSS system. |
+| **4:15 - 5:00** | **Conclusion** | Summarize project completeness, zero build errors, and wrap up. |
 
 ---
 
-## 🎯 Evaluation Criteria Alignment Checklist
+## 🎯 Evaluation Criteria Checklist
 
-- [x] **Project Functionality & Completeness**: Fully implemented authentication, role-based dashboards, location search/distance slider, job posting, and application management.
-- [x] **Code Quality & Project Structure**: Clean separation of backend (controllers, models, routes, middleware) and frontend (components, pages, context, services, styles).
-- [x] **Proper Use of MERN Stack**: MongoDB Mongoose ODM, Express.js REST API with JWT security, React 18, Node.js.
-- [x] **GitHub Repository Organization**: Clean repository layout with `.gitignore`, comprehensive `README.md`, environment setup guides, and seed script.
-- [x] **Clarity & Quality of Submission Document**: Includes team info placeholders, GitHub step-by-step push guide, and 5-minute video presentation outline.
+- [x] **Project Functionality & Completeness**: Auth roles, distance radius search, interactive job radar map, quick apply modal, Seeker & Employer dashboards.
+- [x] **Code Quality & Architecture**: Express controllers/models/routes/middleware + React components/context/services/glassmorphism CSS.
+- [x] **Proper Use of MERN Stack**: MongoDB Mongoose, Express.js REST API with JWT security, React 18, Node.js.
+- [x] **GitHub Repository Organization**: `.gitignore` configured, comprehensive `README.md`, database seeder, environment config.
+- [x] **Clarity & Quality of Submission Document**: Includes team name (`T_N_X`), GitHub URL, video script outline, and submission checklist.
