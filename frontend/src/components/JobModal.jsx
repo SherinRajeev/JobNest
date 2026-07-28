@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { X, MapPin, Clock, DollarSign, CheckCircle2, Send, AlertCircle } from 'lucide-react';
+import { X, MapPin, Clock, CheckCircle2, Send, AlertCircle, IndianRupee } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { JobContext } from '../context/JobContext';
 
@@ -19,11 +19,11 @@ export const JobModal = ({ job, onClose }) => {
   const handleApply = async (e) => {
     e.preventDefault();
     if (!user) {
-      setError('You must be logged in as a Job Seeker to apply.');
+      setError('You must be logged in as an Applicant to submit.');
       return;
     }
     if (user.role !== 'seeker') {
-      setError('Employers cannot submit job applications.');
+      setError('Admin accounts cannot submit job applications.');
       return;
     }
 
@@ -66,10 +66,10 @@ export const JobModal = ({ job, onClose }) => {
         {message && <div className="alert alert-success">{message}</div>}
         {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', padding: '1rem', borderRadius: 'var(--radius-md)', margin: '1rem 0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', background: 'var(--bg-glass)', border: '1px solid var(--border-subtle)', padding: '1rem', borderRadius: 'var(--radius-md)', margin: '1rem 0' }}>
           <div>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Hourly Rate</div>
-            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#34d399' }}>${job.hourlyRate}/hr</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#34d399' }}>₹{job.hourlyRate}/hr</div>
           </div>
           <div>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>Shift Timing</div>
@@ -92,23 +92,23 @@ export const JobModal = ({ job, onClose }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
               {job.requirements.map((req, idx) => (
                 <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-                  <CheckCircle2 size={14} color="var(--primary)" /> {req}
+                  <CheckCircle2 size={14} color="var(--saffron)" /> {req}
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        <form onSubmit={handleApply} style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-glass)' }}>
+        <form onSubmit={handleApply} style={{ marginTop: '1.5rem', paddingTop: '1.25rem', borderTop: '1px solid var(--border-subtle)' }}>
           <h4 style={{ marginBottom: '1rem' }}>Submit Quick Application</h4>
 
           <div className="form-group">
-            <label className="form-label">Phone / Contact Number</label>
+            <label className="form-label">Phone / WhatsApp Number</label>
             <input
               type="text"
               value={phone}
               onChange={e => setPhone(e.target.value)}
-              placeholder="+1 (555) 000-0000"
+              placeholder="+91 98765 00000"
               className="form-control"
               required
             />
@@ -127,12 +127,12 @@ export const JobModal = ({ job, onClose }) => {
           </div>
 
           <div className="form-group">
-            <label className="form-label">Short Cover Note (Optional)</label>
+            <label className="form-label">Short Note (Optional)</label>
             <textarea
               rows="3"
               value={coverNote}
               onChange={e => setCoverNote(e.target.value)}
-              placeholder="Briefly state why you are a great fit for this nearby shift..."
+              placeholder="Briefly mention relevant experience or location suitability..."
               className="form-control"
             />
           </div>

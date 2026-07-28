@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { MapPin, Clock, DollarSign, Bookmark, ArrowRight } from 'lucide-react';
+import { MapPin, Clock, Bookmark, ArrowRight } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { JobContext } from '../context/JobContext';
 
@@ -47,16 +47,16 @@ export const JobCard = ({ job, onViewDetails }) => {
         </p>
 
         <div className="job-meta-row">
-          <div className="job-meta-item">
-            <MapPin size={15} color="var(--primary)" />
+          <div className="job-meta-item" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+            <MapPin size={15} color="var(--saffron)" />
             <span>{job.locationName} ({job.distanceKm || 1.2} km away)</span>
           </div>
         </div>
       </div>
 
-      <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-glass)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <span className="pay-rate">${job.hourlyRate}</span>
+          <span className="pay-rate">₹{job.hourlyRate}</span>
           <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>/hr</span>
         </div>
         <button onClick={() => onViewDetails(job)} className="btn btn-secondary btn-sm">

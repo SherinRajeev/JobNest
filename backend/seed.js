@@ -21,93 +21,93 @@ const seedData = async () => {
     const passwordHash = await bcrypt.hash('password123', 10);
 
     const seeker = await User.create({
-      name: 'Alex Johnson',
+      name: 'Rohan Sharma',
       email: 'seeker@jobnest.com',
       password: passwordHash,
       role: 'seeker',
-      phone: '+1 (555) 234-5678',
-      location: 'Downtown Core',
-      bio: 'Energetic college student seeking flexible weekend & evening part-time shifts.',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+      phone: '+91 98765 43210',
+      location: 'Indiranagar, Bengaluru',
+      bio: 'College student looking for flexible weekend & evening part-time shifts.',
+      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150'
     });
 
     const employer = await User.create({
-      name: 'Sarah Miller',
+      name: 'Priya Nair',
       email: 'employer@jobnest.com',
       password: passwordHash,
       role: 'employer',
-      phone: '+1 (555) 987-6543',
-      location: 'Metro District',
-      bio: 'Hiring Manager at Artisan Brews Cafe & Local Retail Network.',
+      phone: '+91 91234 56789',
+      location: 'Koramangala, Bengaluru',
+      bio: 'Operations Head at Artisan Roastery Cafe & Local Retail Network.',
       avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150'
     });
 
     const jobs = await Job.insertMany([
       {
-        title: 'Weekend Barista & Shift Support',
-        company: 'Artisan Brews Cafe',
+        title: 'Weekend Barista & Shift Associate',
+        company: 'Third Wave Coffee',
         employer: employer._id,
         category: 'Cafe & Barista',
-        hourlyRate: 18.50,
+        hourlyRate: 250,
         shiftTiming: 'Weekend Special',
         hoursPerWeek: 16,
-        locationName: '742 Evergreen Terrace, Downtown',
-        coordinates: { lat: 40.7128, lng: -74.0060 },
+        locationName: '100ft Road, Indiranagar, Bengaluru',
+        coordinates: { lat: 12.9784, lng: 77.6408 },
         distanceKm: 0.8,
-        description: 'We are seeking a friendly weekend barista to craft espresso drinks, greet guests, and maintain counter cleanliness. Great tips!',
-        requirements: ['Basic espresso machine knowledge', 'Customer service oriented', 'Punctual & team player'],
-        perks: ['Free gourmet coffee & meal', 'Weekly cash tips', 'Flexible scheduling'],
+        description: 'Looking for an enthusiastic weekend barista to prepare espresso beverages, manage customer order flow, and assist store operations.',
+        requirements: ['Basic coffee/beverage knowledge', 'Good communication in English/Kannada', 'Punctual & team-oriented'],
+        perks: ['Free gourmet beverage per shift', 'Performance incentives', 'Flexible weekend rosters'],
         positionsAvailable: 2,
         status: 'active'
       },
       {
-        title: 'Evening Retail Store Associate',
-        company: 'Urban Threads Clothing',
+        title: 'Evening Retail Store Representative',
+        company: 'FabIndia Experience Center',
         employer: employer._id,
         category: 'Retail & Store',
-        hourlyRate: 16.75,
+        hourlyRate: 200,
         shiftTiming: 'Evening (6PM - 11PM)',
-        hoursPerWeek: 12,
-        locationName: '120 Market Street, Shopping District',
-        coordinates: { lat: 40.7180, lng: -73.9980 },
+        hoursPerWeek: 15,
+        locationName: 'Connaught Place, New Delhi',
+        coordinates: { lat: 28.6315, lng: 77.2167 },
         distanceKm: 1.5,
-        description: 'Assist customers with apparel fitting, restock floor displays, and process checkout transactions during evening hours.',
-        requirements: ['No prior experience required', 'Friendly communication skills', 'Ability to lift 15 lbs'],
-        perks: ['30% employee discount', 'Bus pass stipend'],
+        description: 'Assist walk-in store visitors with product inquiries, restock retail shelves, and manage checkout queues during peak evening hours.',
+        requirements: ['Friendly customer interaction', 'Punctual attendance', 'Basic POS billing awareness'],
+        perks: ['20% store employee discount', 'Travel allowance for late shifts'],
         positionsAvailable: 3,
         status: 'active'
       },
       {
-        title: 'Express Courier & Parcel Deliverer',
-        company: 'SwiftPace Logistics',
+        title: 'Express Parcel Delivery Partner',
+        company: 'Shadowfax Express',
         employer: employer._id,
         category: 'Delivery & Logistics',
-        hourlyRate: 21.00,
+        hourlyRate: 320,
         shiftTiming: 'Flexible',
         hoursPerWeek: 20,
-        locationName: '88 Commerce Way, North Hub',
-        coordinates: { lat: 40.7250, lng: -74.0120 },
-        distanceKm: 2.3,
-        description: 'Deliver lightweight e-commerce packages across nearby neighborhood zones. Bicycle or e-scooter provided if needed!',
-        requirements: ['Valid driving license or reliable bike', 'Navigation smartphone', 'Punctual delivery track record'],
-        perks: ['Keep 100% of tips', 'Performance bonuses', 'Pick your own hours'],
+        locationName: 'HSR Layout Sector 3, Bengaluru',
+        coordinates: { lat: 12.9116, lng: 77.6389 },
+        distanceKm: 2.2,
+        description: 'Deliver e-commerce parcels and local packages within your assigned neighborhood hub using two-wheelers or e-bikes.',
+        requirements: ['Valid DL / EV bike access', 'Smartphone with GPS navigation', 'Familiarity with neighborhood routes'],
+        perks: ['Weekly payouts', 'Fuel/charge subsidy', 'Keep 100% of customer tips'],
         positionsAvailable: 5,
         status: 'active'
       },
       {
-        title: 'High School Math & Science Tutor',
-        company: 'BrightMind Academy',
+        title: 'Class 9-12 Mathematics Tutor',
+        company: 'BrightAcademy Classes',
         employer: employer._id,
         category: 'Tutoring & Education',
-        hourlyRate: 25.00,
+        hourlyRate: 450,
         shiftTiming: 'Afternoon (1PM - 6PM)',
         hoursPerWeek: 10,
-        locationName: '310 Academic Lane, Campus Quarter',
-        coordinates: { lat: 40.7050, lng: -74.0150 },
+        locationName: 'Jubilee Hills, Hyderabad',
+        coordinates: { lat: 17.4319, lng: 78.4074 },
         distanceKm: 3.1,
-        description: 'Tutor 9th-12th graders in Algebra, Calculus, and Physics in one-on-one or small group sessions.',
-        requirements: ['Strong math background', 'Patient teaching style', 'Minimum 3.5 GPA'],
-        perks: ['High hourly pay', 'Quiet environment', 'Certificate of teaching hours'],
+        description: 'Conduct small-group problem-solving sessions for high school students in Algebra, Trigonometry, and Board exam prep.',
+        requirements: ['Strong math background (B.Sc / B.Tech pursuing)', 'Patient teaching approach'],
+        perks: ['High hourly payout', 'Study material provided', 'Flexible shift timings'],
         positionsAvailable: 2,
         status: 'active'
       }
@@ -116,17 +116,13 @@ const seedData = async () => {
     await Application.create({
       job: jobs[0]._id,
       applicant: seeker._id,
-      coverNote: 'I have 1 year of barista experience and live just 5 minutes away!',
+      coverNote: 'I am a student at NIFT nearby and available every Saturday & Sunday.',
       availability: 'Immediate (Saturdays & Sundays)',
-      phone: '+1 (555) 234-5678',
+      phone: '+91 98765 43210',
       status: 'Applied'
     });
 
-    console.log('Database seeded successfully!');
-    console.log('Demo Credentials:');
-    console.log('Seeker: seeker@jobnest.com / password123');
-    console.log('Employer: employer@jobnest.com / password123');
-
+    console.log('Database seeded with Rupee (₹) rates & Indian locations!');
     process.exit(0);
   } catch (error) {
     console.error('Database seeding failed:', error.message);

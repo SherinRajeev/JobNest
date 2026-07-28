@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Sparkles, ArrowRight, ShieldCheck, Clock, DollarSign, Coffee, ShoppingBag, Truck, GraduationCap, Calendar, Building } from 'lucide-react';
+import { Search, MapPin, Sparkles, ArrowRight, Coffee, ShoppingBag, Truck, GraduationCap, Calendar, Building, IndianRupee } from 'lucide-react';
 import { JobContext } from '../context/JobContext';
 import { JobCard } from '../components/JobCard';
 import { JobModal } from '../components/JobModal';
@@ -25,12 +25,12 @@ export const Home = () => {
   };
 
   const categories = [
-    { title: 'Cafe & Barista', icon: Coffee, count: '12 Nearby', color: 'var(--amber)' },
-    { title: 'Retail & Store', icon: ShoppingBag, count: '18 Nearby', color: 'var(--primary)' },
-    { title: 'Delivery & Logistics', icon: Truck, count: '24 Nearby', color: '#34d399' },
-    { title: 'Tutoring & Education', icon: GraduationCap, count: '9 Nearby', color: '#38bdf8' },
-    { title: 'Event Staff', icon: Calendar, count: '15 Nearby', color: '#f43f5e' },
-    { title: 'Office & Admin', icon: Building, count: '7 Nearby', color: '#a78bfa' }
+    { title: 'Cafe & Barista', icon: Coffee, count: '12 Shifts Nearby', color: 'var(--amber)' },
+    { title: 'Retail & Store', icon: ShoppingBag, count: '18 Shifts Nearby', color: 'var(--saffron)' },
+    { title: 'Delivery & Logistics', icon: Truck, count: '24 Shifts Nearby', color: '#34d399' },
+    { title: 'Tutoring & Education', icon: GraduationCap, count: '9 Shifts Nearby', color: '#38bdf8' },
+    { title: 'Event Staff', icon: Calendar, count: '15 Shifts Nearby', color: '#f43f5e' },
+    { title: 'Office & Admin', icon: Building, count: '7 Shifts Nearby', color: '#a78bfa' }
   ];
 
   return (
@@ -38,22 +38,22 @@ export const Home = () => {
       {/* Hero Section */}
       <section className="hero-section">
         <div className="badge badge-primary" style={{ marginBottom: '1.25rem', padding: '0.4rem 1rem' }}>
-          <Sparkles size={14} /> Revolutionizing Nearby Part-Time Employment
+          <Sparkles size={14} /> Hyperlocal Part-Time Work Network
         </div>
         <h1 className="hero-title">
-          Find High-Paying <span className="gradient-text">Part-Time Jobs</span> Right Around The Corner
+          Discover Flexible <span className="gradient-text">Part-Time Shifts</span> In Your Neighborhood
         </h1>
         <p className="hero-subtitle">
-          JobNest connects local students, freelancers, and energetic job seekers directly with nearby businesses offering flexible hours and great pay.
+          JobNest connects students, freelancers, and local shift workers directly with nearby stores, cafes, events, and businesses offering competitive hourly payouts.
         </p>
 
         {/* Hero Search Bar */}
         <form onSubmit={handleSearchSubmit} className="search-bar-hero">
           <div className="search-input-group">
-            <Search size={20} color="var(--primary)" />
+            <Search size={20} color="var(--saffron)" />
             <input
               type="text"
-              placeholder="Search title, keywords (e.g. Barista, Retail)..."
+              placeholder="Search by neighborhood, store name, or shift keyword..."
               value={filters.search}
               onChange={e => setFilters({ ...filters, search: e.target.value })}
             />
@@ -73,11 +73,11 @@ export const Home = () => {
       <section style={{ margin: '3rem 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem' }}>Live Neighborhood <span className="gradient-text">Job Radar</span></h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem' }}>Interactive map preview of active shifts within your vicinity.</p>
+            <h2 style={{ fontSize: '1.75rem' }}>Neighborhood <span className="gradient-text">Shift Radar</span></h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem' }}>Live map preview of active shifts within your vicinity.</p>
           </div>
           <button onClick={() => navigate('/jobs')} className="btn btn-secondary btn-sm">
-            View Full Map & Filters
+            View Full Radar & Filters
           </button>
         </div>
         <MapView jobs={jobs.slice(0, 6)} onSelectJob={job => setSelectedJob(job)} />
@@ -86,7 +86,7 @@ export const Home = () => {
       {/* Popular Categories */}
       <section style={{ margin: '4rem 0' }}>
         <h2 style={{ fontSize: '1.75rem', marginBottom: '1.5rem', textAlign: 'center' }}>
-          Explore Popular <span className="gradient-text">Part-Time Categories</span>
+          Explore Popular <span className="gradient-text">Shift Categories</span>
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.25rem' }}>
           {categories.map((cat, idx) => {
@@ -98,7 +98,7 @@ export const Home = () => {
                 onClick={() => handleCategoryClick(cat.title)}
                 style={{ textAlign: 'center', cursor: 'pointer', padding: '1.75rem 1rem' }}
               >
-                <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'var(--bg-glass)', border: '1px solid var(--border-glass)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: cat.color }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'var(--bg-glass)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem', color: cat.color }}>
                   <Icon size={24} />
                 </div>
                 <div style={{ fontWeight: 700, fontSize: '1rem', marginBottom: '0.2rem' }}>{cat.title}</div>
@@ -113,8 +113,8 @@ export const Home = () => {
       <section style={{ margin: '4rem 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem' }}>Latest <span className="gradient-text">Part-Time Openings</span></h2>
-            <p style={{ color: 'var(--text-muted)' }}>Apply in under 60 seconds with instant employer notification.</p>
+            <h2 style={{ fontSize: '1.75rem' }}>Latest <span className="gradient-text">Shift Openings</span></h2>
+            <p style={{ color: 'var(--text-muted)' }}>Apply in under 60 seconds with instant recruiter notifications.</p>
           </div>
           <button onClick={() => navigate('/jobs')} className="btn btn-primary btn-sm">
             Browse All ({jobs.length})

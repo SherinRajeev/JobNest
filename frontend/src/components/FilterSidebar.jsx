@@ -1,5 +1,5 @@
 import React from 'react';
-import { Filter, MapPin, DollarSign, Clock, Layers } from 'lucide-react';
+import { Filter, MapPin, IndianRupee, Clock, Layers } from 'lucide-react';
 
 export const FilterSidebar = ({ filters, setFilters, onApply }) => {
   const categories = [
@@ -44,9 +44,9 @@ export const FilterSidebar = ({ filters, setFilters, onApply }) => {
     <aside className="filter-panel">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
         <h3 style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <Filter size={18} color="var(--primary)" /> Filter Jobs
+          <Filter size={18} color="var(--saffron)" /> Filter Shifts
         </h3>
-        <button onClick={resetFilters} style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>
+        <button onClick={resetFilters} style={{ background: 'none', border: 'none', color: 'var(--saffron)', fontSize: '0.8rem', cursor: 'pointer', fontWeight: 600 }}>
           Reset
         </button>
       </div>
@@ -55,9 +55,9 @@ export const FilterSidebar = ({ filters, setFilters, onApply }) => {
       <div className="filter-group">
         <label className="filter-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <MapPin size={15} color="var(--primary)" /> Max Distance
+            <MapPin size={15} color="var(--saffron)" /> Max Distance
           </span>
-          <span style={{ color: 'var(--primary)', fontWeight: 700 }}>{filters.maxDistance} km</span>
+          <span style={{ color: 'var(--saffron)', fontWeight: 700 }}>{filters.maxDistance} km</span>
         </label>
         <input
           type="range"
@@ -80,16 +80,16 @@ export const FilterSidebar = ({ filters, setFilters, onApply }) => {
       <div className="filter-group">
         <label className="filter-title" style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-            <DollarSign size={15} color="#34d399" /> Min Hourly Pay
+            <IndianRupee size={15} color="#34d399" /> Min Hourly Pay
           </span>
-          <span style={{ color: '#34d399', fontWeight: 700 }}>${filters.minRate}/hr</span>
+          <span style={{ color: '#34d399', fontWeight: 700 }}>₹{filters.minRate}/hr</span>
         </label>
         <input
           type="range"
           name="minRate"
           min="0"
-          max="40"
-          step="2"
+          max="800"
+          step="50"
           value={filters.minRate}
           onChange={handleChange}
           className="range-slider"
@@ -99,7 +99,7 @@ export const FilterSidebar = ({ filters, setFilters, onApply }) => {
       {/* Category Selection */}
       <div className="filter-group">
         <label className="filter-title" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Layers size={15} color="var(--primary)" /> Category
+          <Layers size={15} color="var(--saffron)" /> Category
         </label>
         <select name="category" value={filters.category} onChange={handleChange} className="form-control">
           {categories.map(cat => (

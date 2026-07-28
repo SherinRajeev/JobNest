@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { BookMarked, Briefcase, Clock, MapPin, DollarSign, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { BookMarked, MapPin, Clock, CheckCircle2, XCircle, AlertCircle, IndianRupee } from 'lucide-react';
 import API from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import { JobContext } from '../context/JobContext';
@@ -11,7 +11,7 @@ export const SeekerDashboard = () => {
   const { jobs } = useContext(JobContext);
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('applications'); // 'applications' or 'bookmarks'
+  const [activeTab, setActiveTab] = useState('applications');
   const [selectedJob, setSelectedJob] = useState(null);
 
   useEffect(() => {
@@ -46,22 +46,22 @@ export const SeekerDashboard = () => {
   return (
     <div className="container" style={{ paddingTop: '2.5rem' }}>
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '2rem' }}>Job Seeker <span className="gradient-text">Dashboard</span></h1>
-        <p style={{ color: 'var(--text-muted)' }}>Track your part-time shift applications & saved listings</p>
+        <h1 style={{ fontSize: '2rem' }}>Applicant <span className="gradient-text">Dashboard</span></h1>
+        <p style={{ color: 'var(--text-muted)' }}>Track your submitted shift applications & saved opportunities</p>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid var(--border-glass)', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid var(--border-subtle)', marginBottom: '2rem' }}>
         <button
           onClick={() => setActiveTab('applications')}
           style={{
             background: 'none',
             border: 'none',
             padding: '0.85rem 1.25rem',
-            color: activeTab === 'applications' ? 'var(--primary)' : 'var(--text-muted)',
+            color: activeTab === 'applications' ? 'var(--saffron)' : 'var(--text-muted)',
             fontWeight: 600,
             fontSize: '1rem',
-            borderBottom: activeTab === 'applications' ? '2px solid var(--primary)' : 'none',
+            borderBottom: activeTab === 'applications' ? '2px solid var(--saffron)' : 'none',
             cursor: 'pointer'
           }}
         >
@@ -73,14 +73,14 @@ export const SeekerDashboard = () => {
             background: 'none',
             border: 'none',
             padding: '0.85rem 1.25rem',
-            color: activeTab === 'bookmarks' ? 'var(--primary)' : 'var(--text-muted)',
+            color: activeTab === 'bookmarks' ? 'var(--saffron)' : 'var(--text-muted)',
             fontWeight: 600,
             fontSize: '1rem',
-            borderBottom: activeTab === 'bookmarks' ? '2px solid var(--primary)' : 'none',
+            borderBottom: activeTab === 'bookmarks' ? '2px solid var(--saffron)' : 'none',
             cursor: 'pointer'
           }}
         >
-          Bookmarked Jobs ({savedJobsList.length})
+          Saved Shifts ({savedJobsList.length})
         </button>
       </div>
 
@@ -89,18 +89,18 @@ export const SeekerDashboard = () => {
           <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-muted)' }}>Loading applications...</div>
         ) : applications.length === 0 ? (
           <div className="card-glass" style={{ textAlign: 'center', padding: '3.5rem' }}>
-            <h3>No Applications Yet</h3>
-            <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Explore nearby jobs and submit your first application!</p>
+            <h3>No Applications Submitted Yet</h3>
+            <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Explore nearby shifts and submit your first application!</p>
           </div>
         ) : (
           <div className="table-responsive card-glass" style={{ padding: 0 }}>
             <table className="custom-table">
               <thead>
                 <tr>
-                  <th>Job Title</th>
+                  <th>Position & Category</th>
                   <th>Company & Location</th>
-                  <th>Pay Rate</th>
-                  <th>Applied On</th>
+                  <th>Hourly Pay</th>
+                  <th>Applied Date</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -112,13 +112,13 @@ export const SeekerDashboard = () => {
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>{app.job?.category}</div>
                     </td>
                     <td>
-                      <div>{app.job?.company || 'Local Business'}</div>
+                      <div>{app.job?.company || 'Local Store'}</div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                         <MapPin size={12} /> {app.job?.locationName || 'Nearby'}
                       </div>
                     </td>
                     <td>
-                      <span style={{ fontWeight: 700, color: '#34d399' }}>${app.job?.hourlyRate || '18'}/hr</span>
+                      <span style={{ fontWeight: 700, color: '#34d399' }}>₹{app.job?.hourlyRate || '250'}/hr</span>
                     </td>
                     <td style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                       {new Date(app.createdAt).toLocaleDateString()}
@@ -133,8 +133,8 @@ export const SeekerDashboard = () => {
       ) : (
         savedJobsList.length === 0 ? (
           <div className="card-glass" style={{ textAlign: 'center', padding: '3.5rem' }}>
-            <h3>No Saved Jobs</h3>
-            <p style={{ color: 'var(--text-muted)' }}>Click the bookmark icon on any job card to save it here for later.</p>
+            <h3>No Saved Shifts</h3>
+            <p style={{ color: 'var(--text-muted)' }}>Click the bookmark icon on any job card to save it for later.</p>
           </div>
         ) : (
           <div className="jobs-grid">
