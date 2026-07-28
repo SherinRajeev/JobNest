@@ -1,6 +1,10 @@
 import Job from '../models/Job.js';
 import User from '../models/User.js';
-import { memoryStore } from '../config/store.js';
+import { memoryStore, calculateDistance } from '../config/store.js';
+
+// Kottayam Town Center default coordinates
+const KOTTAYAM_CENTER_LAT = 9.5916;
+const KOTTAYAM_CENTER_LNG = 76.5222;
 
 export const getJobs = async (req, res) => {
   try {
@@ -37,8 +41,13 @@ export const getJobs = async (req, res) => {
       const jobs = await Job.find(query).sort({ createdAt: -1 });
       return res.json(jobs);
     } else {
-      // In-memory filter
-      let filtered = [...memoryStore.jobs];
+      // In-memory filter with dynamic real Haversine distance calculation
+      let filtered = memoryStore.jobs.map(j => {
+        const jLat = j.coordinates?.lat || KOTTAYAM_CENTER_LAT;
+        const jLng = j.coordinates?.lng || KOTTAYAM_CENTER_LNG;
+        const realDist = calculateDistance(KOTTAYAM_CENTER_LAT, KOTTAYAM_CENTER_LNG, jLat, jLng);
+        return { ...j, distanceKm: realDist };
+      });
 
       if (search) {
         const s = search.toLowerCase();
@@ -101,7 +110,6 @@ export const createJob = async (req, res) => {
       hoursPerWeek,
       locationName,
       coordinates,
-      distanceKm,
       description,
       requirements,
       perks,
@@ -114,6 +122,11 @@ export const createJob = async (req, res) => {
 
     const userId = req.user.id || req.user._id;
 
+    // Use job coordinates or small offset from Kottayam Center
+    const jobLat = coordinates?.lat || (KOTTAYAM_CENTER_LAT + (Math.random() - 0.5) * 0.02);
+    const jobLng = coordinates?.lng || (KOTTAYAM_CENTER_LNG + (Math.random() - 0.5) * 0.02);
+    const realDist = calculateDistance(KOTTAYAM_CENTER_LAT, KOTTAYAM_CENTER_LNG, jobLat, jobLng);
+
     if (req.dbConnected) {
       const job = await Job.create({
         title,
@@ -124,8 +137,8 @@ export const createJob = async (req, res) => {
         shiftTiming: shiftTiming || 'Flexible',
         hoursPerWeek: Number(hoursPerWeek) || 15,
         locationName,
-        coordinates: coordinates || { lat: 40.7128, lng: -74.0060 },
-        distanceKm: Number(distanceKm) || 1.5,
+        coordinates: { lat: jobLat, lng: jobLng },
+        distanceKm: realDist,
         description,
         requirements: Array.isArray(requirements) ? requirements : (requirements ? requirements.split(',').map(r => r.trim()) : []),
         perks: Array.isArray(perks) ? perks : (perks ? perks.split(',').map(p => p.trim()) : []),
@@ -144,8 +157,8 @@ export const createJob = async (req, res) => {
         shiftTiming: shiftTiming || 'Flexible',
         hoursPerWeek: Number(hoursPerWeek) || 15,
         locationName,
-        coordinates: coordinates || { lat: 40.7128 + (Math.random() - 0.5) * 0.05, lng: -74.0060 + (Math.random() - 0.5) * 0.05 },
-        distanceKm: Number(distanceKm) || parseFloat((Math.random() * 4 + 0.5).toFixed(1)),
+        coordinates: { lat: jobLat, lng: jobLng },
+        distanceKm: realDist,
         description,
         requirements: Array.isArray(requirements) ? requirements : (requirements ? requirements.split(',').map(r => r.trim()) : []),
         perks: Array.isArray(perks) ? perks : (perks ? perks.split(',').map(p => p.trim()) : []),
