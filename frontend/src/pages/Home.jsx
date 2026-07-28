@@ -38,10 +38,10 @@ export const Home = () => {
       {/* Hero Section */}
       <section className="hero-section">
         <h1 className="hero-title">
-          Find Part-Time <span className="gradient-text">Shifts & Recruiter Jobs</span> Near You In Kochi
+          Find Part-Time <span className="gradient-text">Shifts & Recruiter Jobs</span> Near You In Kottayam Town
         </h1>
         <p className="hero-subtitle">
-          JobNest connects students, freelancers, and shift workers in Kochi with nearby stores, cafes, tutoring centers, and InfoPark recruiters offering flexible hourly pay.
+          JobNest connects students, freelancers, and shift workers in Kottayam with nearby stores, cafes, tuition hubs, and recruiters offering flexible hourly pay.
         </p>
 
         {/* Hero Search Bar */}
@@ -50,7 +50,7 @@ export const Home = () => {
             <Search size={20} color="var(--primary)" />
             <input
               type="text"
-              placeholder="Search Marine Drive, Edappally, Kakkanad, InfoPark, Fort Kochi..."
+              placeholder="Search Kanjikuzhy, Thirunakkara, CMS College Road, Nagampadam, Collectorate..."
               value={filters.search}
               onChange={e => setFilters({ ...filters, search: e.target.value })}
             />
@@ -70,8 +70,8 @@ export const Home = () => {
       <section style={{ margin: '3rem 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem' }}>Kochi Neighborhood <span className="gradient-text">Shift Map</span></h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem' }}>Live recruiters & active openings centered around your location in Kochi, Kerala.</p>
+            <h2 style={{ fontSize: '1.75rem' }}>Kottayam Town Neighborhood <span className="gradient-text">Shift Map</span></h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem' }}>Live recruiters & active openings centered around your location in Kottayam Town, Kerala.</p>
           </div>
           <button onClick={() => navigate('/jobs')} className="btn btn-secondary btn-sm">
             View Map & Filters
@@ -110,8 +110,8 @@ export const Home = () => {
       <section style={{ margin: '4rem 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.75rem' }}>Active Openings <span className="gradient-text">Near Kochi</span></h2>
-            <p style={{ color: 'var(--text-muted)' }}>Apply directly to recruiters in Ernakulam and nearby areas.</p>
+            <h2 style={{ fontSize: '1.75rem' }}>Active Openings <span className="gradient-text">Near Kottayam Town</span></h2>
+            <p style={{ color: 'var(--text-muted)' }}>Apply directly to recruiters in Kottayam Town and nearby areas.</p>
           </div>
           <button onClick={() => navigate('/jobs')} className="btn btn-primary btn-sm">
             Browse All ({jobs.length})

@@ -13,11 +13,11 @@ export const MapView = ({ jobs, onSelectJob }) => {
       mapInstanceRef.current = null;
     }
 
-    // Default center: Marine Drive, Kochi, Kerala
-    const kochiCenter = [9.9790, 76.2750];
+    // Default center: Kottayam Town, Kerala
+    const kottayamCenter = [9.5916, 76.5222];
 
     // Initialize real Leaflet OpenStreetMap instance
-    const map = window.L.map(mapContainerRef.current).setView(kochiCenter, 13);
+    const map = window.L.map(mapContainerRef.current).setView(kottayamCenter, 14);
     mapInstanceRef.current = map;
 
     // Add OpenStreetMap tile layer
@@ -26,7 +26,7 @@ export const MapView = ({ jobs, onSelectJob }) => {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 
-    // Add User Location Pulse Marker at Marine Drive
+    // Add User Location Pulse Marker at Kottayam Town Center
     const userIcon = window.L.divIcon({
       className: 'user-location-marker',
       html: `<div style="width: 22px; height: 22px; border-radius: 50%; background: #059669; border: 3px solid #ffffff; box-shadow: 0 0 12px rgba(5,150,105,0.8);"></div>`,
@@ -34,14 +34,14 @@ export const MapView = ({ jobs, onSelectJob }) => {
       iconAnchor: [11, 11]
     });
 
-    window.L.marker(kochiCenter, { icon: userIcon })
+    window.L.marker(kottayamCenter, { icon: userIcon })
       .addTo(map)
-      .bindPopup(`<b>Your Location</b><br/>Marine Drive, Kochi, Kerala`);
+      .bindPopup(`<b>Your Location</b><br/>Kottayam Town, Kerala`);
 
-    // Render Real Job Pin Markers across Kochi
+    // Render Real Job Pin Markers across Kottayam Town
     jobs.forEach((job) => {
-      const lat = job.coordinates?.lat || 9.9790;
-      const lng = job.coordinates?.lng || 76.2750;
+      const lat = job.coordinates?.lat || 9.5916;
+      const lng = job.coordinates?.lng || 76.5222;
 
       const customIcon = window.L.divIcon({
         className: 'real-job-marker',
@@ -89,7 +89,7 @@ export const MapView = ({ jobs, onSelectJob }) => {
       <div ref={mapContainerRef} style={{ width: '100%', height: '100%', zIndex: 1 }} />
       <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 1000, background: '#ffffff', border: '1px solid var(--border-subtle)', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 600, color: '#0f172a', boxShadow: 'var(--shadow-sm)', display: 'flex', alignItems: 'center', gap: '6px' }}>
         <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669' }}></span>
-        Real OpenStreetMap • Kochi, Kerala ({jobs.length} recruiters active)
+        Real OpenStreetMap • Kottayam Town, Kerala ({jobs.length} recruiters active)
       </div>
     </div>
   );
