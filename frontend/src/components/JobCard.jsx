@@ -1,66 +1,136 @@
 import React, { useContext } from 'react';
-import { MapPin, Clock, Bookmark, ArrowRight } from 'lucide-react';
-import { AuthContext } from '../context/AuthContext';
+import { MapPin, Clock, Bookmark, ArrowRight, IndianRupee } from 'lucide-react';
 import { JobContext } from '../context/JobContext';
 
 export const JobCard = ({ job, onViewDetails }) => {
-  const { user } = useContext(AuthContext);
-  const { toggleBookmark } = useContext(JobContext);
-
+  const { toggleBookmark, user } = useContext(JobContext);
   const isSaved = user?.savedJobs?.includes(job._id);
 
+  const handleBookmarkClick = (e) => {
+    e.stopPropagation();
+    toggleBookmark(job._id);
+  };
+
   return (
-    <div className="card-glass" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-      <div>
-        <div className="job-card-header">
-          <div style={{ display: 'flex', gap: '0.85rem', alignItems: 'center' }}>
-            <div className="company-logo">
-              {job.company.substring(0, 2).toUpperCase()}
-            </div>
-            <div>
-              <h3 className="job-title">{job.title}</h3>
-              <div className="job-company">{job.company}</div>
+    <div
+      className="card-glass"
+      onClick={() => onViewDetails && onViewDetails(job)}
+      style={{
+        padding: '1.5rem',
+        position: 'relative',
+        cursor: 'pointer',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}
+    >
+      {/* Header Row: Company Icon, Title, and Bookmark */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <div style={{
+            width: '46px',
+            height: '46px',
+            minWidth: '46px',
+            minHeight: '46px',
+            borderRadius: '12px',
+            background: 'var(--primary-light)',
+            color: 'var(--primary)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontWeight: 800,
+            fontSize: '1rem',
+            border: '1px solid rgba(37,99,235,0.15)',
+            flexShrink: 0
+          }}>
+            {job.company ? job.company.substring(0, 2).toUpperCase() : 'JN'}
+          </div>
+          <div>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-main)', marginBottom: '0.2rem', lineHeight: 1.3 }}>
+              {job.title}
+            </h3>
+            <div style={{ fontSize: '0.88rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+              {job.company}
             </div>
           </div>
-          <button
-            onClick={() => toggleBookmark(job._id)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: isSaved ? '#d97706' : 'var(--text-dim)',
-              transition: 'var(--transition)'
-            }}
-            title={isSaved ? 'Remove Bookmark' : 'Save Job'}
-          >
-            <Bookmark size={20} fill={isSaved ? '#d97706' : 'none'} />
-          </button>
         </div>
 
-        <div style={{ margin: '0.85rem 0', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <span className="badge badge-primary">{job.category}</span>
-          <span className="badge badge-amber"><Clock size={12} /> {job.shiftTiming}</span>
-        </div>
-
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', margin: '0.85rem 0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-          {job.description}
-        </p>
-
-        <div className="job-meta-row">
-          <div className="job-meta-item" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <MapPin size={15} color="var(--primary)" />
-            <span>{job.locationName} ({job.distanceKm || 1.2} km away)</span>
-          </div>
-        </div>
+        <button
+          onClick={handleBookmarkClick}
+          style={{
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '6px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s ease'
+          }}
+          title={isSaved ? 'Remove Bookmark' : 'Save Shift'}
+        >
+          <Bookmark size={20} fill={isSaved ? 'var(--primary)' : 'none'} color={isSaved ? 'var(--primary)' : 'var(--text-muted)'} />
+        </button>
       </div>
 
-      <div style={{ marginTop: '1.25rem', paddingTop: '1rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div>
-          <span className="pay-rate">₹{job.hourlyRate}</span>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>/hr</span>
+      {/* Badges: Category & Shift Timing */}
+      <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <span className="badge badge-primary" style={{ padding: '0.4rem 0.8rem', fontSize: '0.82rem' }}>
+          {job.category}
+        </span>
+        <span style={{ fontSize: '0.82rem', color: 'var(--text-muted)', display: 'inline-flex', alignItems: 'center', gap: '4px', background: 'var(--slate-bg)', padding: '0.35rem 0.75rem', borderRadius: '16px', border: '1px solid var(--border-subtle)' }}>
+          <Clock size={13} /> {job.shiftTiming || 'Flexible'}
+        </span>
+      </div>
+
+      {/* Description Snippet */}
+      <p style={{ fontSize: '0.92rem', color: 'var(--text-muted)', lineHeight: 1.5, margin: 0 }}>
+        {job.description}
+      </p>
+
+      {/* Location Row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.88rem', color: '#0284c7', fontWeight: 500 }}>
+        <MapPin size={16} /> {job.locationName} {job.distanceKm !== undefined ? `(${job.distanceKm} km away)` : ''}
+      </div>
+
+      {/* Bottom Footer: Highlighted Pay Rate & Details Action Button */}
+      <div style={{
+        display: 'flex',
+        justify: 'space-between',
+        alignItems: 'center',
+        paddingTop: '0.85rem',
+        borderTop: '1px solid var(--border-subtle)',
+        marginTop: '0.25rem'
+      }}>
+        {/* Prominently Highlighted Pay Rate Badge */}
+        <div style={{
+          background: '#ecfdf5',
+          color: '#059669',
+          border: '1px solid #a7f3d0',
+          padding: '0.4rem 0.9rem',
+          borderRadius: '20px',
+          fontSize: '1.05rem',
+          fontWeight: 800,
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '2px',
+          boxShadow: '0 1px 3px rgba(5,150,105,0.1)'
+        }}>
+          ₹{job.hourlyRate}<span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#047857' }}>/hr</span>
         </div>
-        <button onClick={() => onViewDetails(job)} className="btn btn-secondary btn-sm">
-          Details <ArrowRight size={14} />
+
+        {/* Working Details Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onViewDetails && onViewDetails(job);
+          }}
+          className="btn btn-primary btn-sm"
+          style={{ padding: '0.5rem 1.1rem', borderRadius: '10px', fontSize: '0.88rem' }}
+        >
+          Details <ArrowRight size={15} />
         </button>
       </div>
     </div>
