@@ -8,35 +8,44 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
 
+  // Local user accounts database fallback
+  const [userDatabase, setUserDatabase] = useState(() => {
+    const stored = localStorage.getItem('jobnest_users_db');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (e) {}
+    }
+    return [
+      {
+        _id: 'usr_seeker_1',
+        name: 'Rohan Sharma',
+        email: 'seeker@jobnest.com',
+        role: 'seeker',
+        phone: '+91 98765 43210',
+        location: 'Kottayam Town, Kerala',
+        bio: 'College student looking for flexible weekend & evening part-time shifts.',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan',
+        savedJobs: ['job_1', 'job_3']
+      },
+      {
+        _id: 'usr_employer_1',
+        name: 'Priya Nair',
+        email: 'employer@jobnest.com',
+        role: 'employer',
+        phone: '+91 91234 56789',
+        location: 'Kanjikuzhy, Kottayam',
+        bio: 'Recruiter at Local Business & Retail Networks in Kerala.',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya',
+        savedJobs: []
+      }
+    ];
+  });
+
   const [registeredEmails, setRegisteredEmails] = useState(() => {
     const stored = localStorage.getItem('jobnest_registered_emails');
     return stored ? JSON.parse(stored) : ['seeker@jobnest.com', 'employer@jobnest.com'];
   });
-
-  const demoUsers = [
-    {
-      _id: 'usr_seeker_1',
-      name: 'Rohan Sharma',
-      email: 'seeker@jobnest.com',
-      role: 'seeker',
-      phone: '+91 98765 43210',
-      location: 'Kottayam Town, Kerala',
-      bio: 'College student looking for flexible weekend & evening part-time shifts.',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Rohan',
-      savedJobs: ['job_1', 'job_3']
-    },
-    {
-      _id: 'usr_employer_1',
-      name: 'Priya Nair',
-      email: 'employer@jobnest.com',
-      role: 'employer',
-      phone: '+91 91234 56789',
-      location: 'Kanjikuzhy, Kottayam',
-      bio: 'Recruiter at Local Business & Retail Networks in Kerala.',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Priya',
-      savedJobs: []
-    }
-  ];
 
   useEffect(() => {
     const loadUser = async () => {
@@ -78,7 +87,8 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.warn('API login fallback proceeding.');
       
-      const found = demoUsers.find(u => u.email.toLowerCase() === normEmail);
+      // Look up user in local userDatabase to preserve Recruiter vs Applicant role
+      const found = userDatabase.find(u => u.email.toLowerCase() === normEmail);
       let authUser = found;
 
       if (!authUser) {
@@ -114,9 +124,10 @@ export const AuthProvider = ({ children }) => {
     }
 
     const selectedAvatar = customAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`;
+    const assignedRole = role === 'employer' || role === 'recruiter' ? 'employer' : 'seeker';
 
     try {
-      const { data } = await API.post('/auth/register', { name, email: normEmail, password, role, phone, location, avatar: selectedAvatar });
+      const { data } = await API.post('/auth/register', { name, email: normEmail, password, role: assignedRole, phone, location, avatar: selectedAvatar });
       setToken(data.token);
       setUser(data.user);
       localStorage.setItem('token', data.token);
@@ -138,10 +149,10 @@ export const AuthProvider = ({ children }) => {
         _id: `usr_${Date.now()}`,
         name: name || 'New User',
         email: normEmail,
-        role: role || 'seeker',
+        role: assignedRole,
         phone: phone || '+91 98765 43210',
         location: location || 'Kottayam Town, Kerala',
-        bio: 'JobNest Registered Member',
+        bio: assignedRole === 'employer' ? 'Recruiter at Local Business Network' : 'JobNest Registered Applicant',
         avatar: selectedAvatar,
         savedJobs: []
       };
@@ -151,6 +162,10 @@ export const AuthProvider = ({ children }) => {
       setUser(newUser);
       localStorage.setItem('token', mockToken);
       localStorage.setItem('user', JSON.stringify(newUser));
+
+      const updatedDb = [newUser, ...userDatabase];
+      setUserDatabase(updatedDb);
+      localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
 
       const updatedList = [...registeredEmails, normEmail];
       setRegisteredEmails(updatedList);

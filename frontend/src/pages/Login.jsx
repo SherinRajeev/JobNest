@@ -26,12 +26,8 @@ export const Login = () => {
         navigate('/jobs');
       }
     } catch (err) {
-      console.warn('Login fallback proceeding:', err);
-      if (email.includes('recruiter') || email.includes('employer') || email.includes('admin')) {
-        navigate('/employer-dashboard');
-      } else {
-        navigate('/jobs');
-      }
+      console.warn('Login error:', err);
+      setError('Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
