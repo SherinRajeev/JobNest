@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { X, User, Mail, Phone, MapPin, Save, LogOut, Sparkles, Edit3, ShieldCheck } from 'lucide-react';
+import { X, User, Mail, Phone, MapPin, Save, LogOut, Sparkles, Edit3, ShieldCheck, Upload, Image as ImageIcon } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import API from '../services/api';
 
@@ -23,6 +23,22 @@ export const ProfileModal = ({ onClose }) => {
   const handleRandomAvatar = () => {
     const randomSeed = avatarSeeds[Math.floor(Math.random() * avatarSeeds.length)] + Math.floor(Math.random() * 100);
     setAvatar(`https://api.dicebear.com/7.x/avataaars/svg?seed=${randomSeed}`);
+  };
+
+  // Handle local image file upload (convert to Base64)
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size exceeds 5MB limit. Please choose a smaller photo.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleSave = async (e) => {
@@ -55,7 +71,7 @@ export const ProfileModal = ({ onClose }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '480px', padding: '2.25rem' }}>
+      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '490px', padding: '2.25rem' }}>
         {/* Close Modal Button */}
         <button onClick={onClose} style={{ position: 'absolute', top: '1.25rem', right: '1.25rem', background: 'none', border: 'none', cursor: 'pointer', padding: '4px' }}>
           <X size={20} color="var(--text-muted)" />
@@ -63,22 +79,28 @@ export const ProfileModal = ({ onClose }) => {
 
         {/* Profile Avatar & Header Info */}
         <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
-          <div style={{ position: 'relative', width: '84px', height: '84px', margin: '0 auto 0.75rem' }}>
+          <div style={{ position: 'relative', width: '88px', height: '88px', margin: '0 auto 0.75rem' }}>
             <img
               src={avatar || user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`}
               alt={name}
-              style={{ width: '84px', height: '84px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--primary)', background: '#eff6ff', boxShadow: 'var(--shadow-sm)' }}
+              style={{ width: '88px', height: '88px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--primary)', background: '#eff6ff', boxShadow: 'var(--shadow-sm)' }}
             />
             {isEditing && (
-              <button
-                type="button"
-                onClick={handleRandomAvatar}
-                title="Change Cartoon Avatar"
+              <label
+                htmlFor="avatar-modal-file"
+                title="Upload Photo From Computer"
                 style={{ position: 'absolute', bottom: '0', right: '0', background: 'var(--primary)', color: '#fff', border: '2px solid #fff', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
               >
-                <Sparkles size={14} />
-              </button>
+                <Upload size={14} />
+              </label>
             )}
+            <input
+              type="file"
+              id="avatar-modal-file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              style={{ display: 'none' }}
+            />
           </div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.25rem' }}>{user?.name || 'User Name'}</h2>
           <span className="badge badge-primary" style={{ fontSize: '0.8rem', padding: '0.35rem 0.85rem' }}>
@@ -128,7 +150,7 @@ export const ProfileModal = ({ onClose }) => {
               className="btn btn-primary btn-full"
               style={{ marginTop: '0.5rem' }}
             >
-              <Edit3 size={16} /> Edit Profile Details
+              <Edit3 size={16} /> Edit Profile & Photo
             </button>
 
             <button
@@ -146,6 +168,20 @@ export const ProfileModal = ({ onClose }) => {
         ) : (
           /* Edit Mode Form */
           <form onSubmit={handleSave}>
+            {/* Custom Photo Upload Controls */}
+            <div style={{ marginBottom: '1.25rem', textAlign: 'center', background: 'var(--slate-bg)', padding: '0.85rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
+              <label className="form-label" style={{ marginBottom: '0.5rem' }}>Profile Photo Options:</label>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <label className="btn btn-secondary btn-sm" style={{ cursor: 'pointer' }}>
+                  <Upload size={14} /> Choose From Device
+                  <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: 'none' }} />
+                </label>
+                <button type="button" onClick={handleRandomAvatar} className="btn btn-secondary btn-sm">
+                  <Sparkles size={14} /> Cartoon Avatar
+                </button>
+              </div>
+            </div>
+
             <div className="form-group" style={{ marginBottom: '0.85rem' }}>
               <label className="form-label">Full Name *</label>
               <div style={{ position: 'relative' }}>

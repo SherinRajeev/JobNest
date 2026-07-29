@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, AlertCircle, ShieldCheck, User, Eye, EyeOff, LogIn } from 'lucide-react';
+import { UserPlus, AlertCircle, ShieldCheck, User, Eye, EyeOff, LogIn, Upload, Sparkles } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 export const Register = () => {
@@ -14,8 +14,30 @@ export const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = useState('');
   const [location, setLocation] = useState('Kottayam Town, Kerala');
+  const [avatar, setAvatar] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Handle local image file upload (convert to Base64)
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('File size exceeds 5MB limit. Please choose a smaller photo.');
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatar(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRandomAvatar = () => {
+    const seedName = name || email.split('@')[0] || 'User';
+    setAvatar(`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seedName)}_${Date.now()}`);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,7 +48,8 @@ export const Register = () => {
     setLoading(true);
     setError(null);
     try {
-      const u = await register(name, email, password, role, phone, location);
+      const selectedAvatar = avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`;
+      const u = await register(name, email, password, role, phone, location, selectedAvatar);
       const isRecruiter = u && ['employer', 'recruiter', 'admin'].includes(u.role?.toLowerCase());
       if (isRecruiter) {
         navigate('/employer-dashboard');
@@ -42,7 +65,7 @@ export const Register = () => {
   };
 
   return (
-    <div className="container" style={{ paddingTop: '2.5rem', maxWidth: '520px' }}>
+    <div className="container" style={{ paddingTop: '2.5rem', maxWidth: '540px' }}>
       <div className="card-glass" style={{ padding: '2.25rem' }}>
         <h1 style={{ fontSize: '1.8rem', textAlign: 'center', marginBottom: '0.5rem' }}>Join <span className="gradient-text">JobNest</span></h1>
         <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
@@ -86,6 +109,26 @@ export const Register = () => {
                 style={{ padding: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
               >
                 <ShieldCheck size={16} /> Recruiter
+              </button>
+            </div>
+          </div>
+
+          {/* Profile Photo Picker on Registration */}
+          <div className="form-group" style={{ textAlign: 'center', background: 'var(--slate-bg)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border-subtle)', marginBottom: '1.25rem' }}>
+            <div style={{ width: '64px', height: '64px', margin: '0 auto 0.5rem', position: 'relative' }}>
+              <img
+                src={avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`}
+                alt="Profile Preview"
+                style={{ width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--primary)', background: '#eff6ff' }}
+              />
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
+              <label className="btn btn-secondary btn-sm" style={{ cursor: 'pointer' }}>
+                <Upload size={14} /> Choose Photo From Computer
+                <input type="file" accept="image/*" onChange={handleFileUpload} style={{ display: 'none' }} />
+              </label>
+              <button type="button" onClick={handleRandomAvatar} className="btn btn-secondary btn-sm">
+                <Sparkles size={14} /> Cartoon
               </button>
             </div>
           </div>

@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
 
-  // Track registered emails locally for instant fallback duplicate prevention
   const [registeredEmails, setRegisteredEmails] = useState(() => {
     const stored = localStorage.getItem('jobnest_registered_emails');
     return stored ? JSON.parse(stored) : ['seeker@jobnest.com', 'employer@jobnest.com'];
@@ -107,16 +106,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (name, email, password, role, phone, location) => {
+  const register = async (name, email, password, role, phone, location, customAvatar) => {
     const normEmail = email.toLowerCase().trim();
 
-    // Check if email already registered locally
     if (registeredEmails.includes(normEmail)) {
       throw new Error('This account already exists! Go and sign in.');
     }
 
+    const selectedAvatar = customAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`;
+
     try {
-      const { data } = await API.post('/auth/register', { name, email: normEmail, password, role, phone, location });
+      const { data } = await API.post('/auth/register', { name, email: normEmail, password, role, phone, location, avatar: selectedAvatar });
       setToken(data.token);
       setUser(data.user);
       localStorage.setItem('token', data.token);
@@ -134,7 +134,6 @@ export const AuthProvider = ({ children }) => {
       }
 
       console.warn('API register fallback proceeding.');
-      const seedName = name || normEmail.split('@')[0] || 'User';
       const newUser = {
         _id: `usr_${Date.now()}`,
         name: name || 'New User',
@@ -143,7 +142,7 @@ export const AuthProvider = ({ children }) => {
         phone: phone || '+91 98765 43210',
         location: location || 'Kottayam Town, Kerala',
         bio: 'JobNest Registered Member',
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seedName)}`,
+        avatar: selectedAvatar,
         savedJobs: []
       };
 
