@@ -19,6 +19,10 @@ export const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!phone) {
+      setError('Phone Number is mandatory!');
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -136,13 +140,14 @@ export const Register = () => {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <div className="form-group">
-              <label className="form-label">Phone Number</label>
+              <label className="form-label">Phone Number *</label>
               <input
                 type="text"
                 placeholder="+91 98765 43210"
                 value={phone}
                 onChange={e => setPhone(e.target.value)}
                 className="form-control"
+                required
               />
             </div>
             <div className="form-group">
