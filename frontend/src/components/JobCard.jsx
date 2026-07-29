@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { MapPin, Clock, Bookmark, ArrowRight, IndianRupee } from 'lucide-react';
+import { MapPin, Clock, Bookmark, ArrowRight } from 'lucide-react';
 import { JobContext } from '../context/JobContext';
 
 export const JobCard = ({ job, onViewDetails }) => {
@@ -11,10 +11,15 @@ export const JobCard = ({ job, onViewDetails }) => {
     toggleBookmark(job._id);
   };
 
+  const handleDetailsClick = (e) => {
+    e.stopPropagation();
+    if (onViewDetails) onViewDetails(job);
+  };
+
   return (
     <div
       className="card-glass"
-      onClick={() => onViewDetails && onViewDetails(job)}
+      onClick={handleDetailsClick}
       style={{
         padding: '1.5rem',
         position: 'relative',
@@ -65,8 +70,7 @@ export const JobCard = ({ job, onViewDetails }) => {
             borderRadius: '50%',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'all 0.2s ease'
+            justifyContent: 'center'
           }}
           title={isSaved ? 'Remove Bookmark' : 'Save Shift'}
         >
@@ -94,16 +98,17 @@ export const JobCard = ({ job, onViewDetails }) => {
         <MapPin size={16} /> {job.locationName} {job.distanceKm !== undefined ? `(${job.distanceKm} km away)` : ''}
       </div>
 
-      {/* Bottom Footer: Highlighted Pay Rate & Details Action Button */}
+      {/* Bottom Footer: Left = Pay Badge, Right = Details Button */}
       <div style={{
         display: 'flex',
         justify: 'space-between',
         alignItems: 'center',
         paddingTop: '0.85rem',
         borderTop: '1px solid var(--border-subtle)',
-        marginTop: '0.25rem'
+        marginTop: '0.25rem',
+        width: '100%'
       }}>
-        {/* Prominently Highlighted Pay Rate Badge */}
+        {/* Left Side: Highlighted Emerald Pay Badge */}
         <div style={{
           background: '#ecfdf5',
           color: '#059669',
@@ -120,13 +125,10 @@ export const JobCard = ({ job, onViewDetails }) => {
           ₹{job.hourlyRate}<span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#047857' }}>/hr</span>
         </div>
 
-        {/* Working Details Button */}
+        {/* Right Side: Details Button */}
         <button
           type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            onViewDetails && onViewDetails(job);
-          }}
+          onClick={handleDetailsClick}
           className="btn btn-primary btn-sm"
           style={{ padding: '0.5rem 1.1rem', borderRadius: '10px', fontSize: '0.88rem' }}
         >
