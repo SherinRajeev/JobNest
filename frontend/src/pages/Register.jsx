@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, AlertCircle, ShieldCheck, User, Eye, EyeOff } from 'lucide-react';
+import { UserPlus, AlertCircle, ShieldCheck, User, Eye, EyeOff, LogIn } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 export const Register = () => {
@@ -34,12 +34,8 @@ export const Register = () => {
         navigate('/jobs');
       }
     } catch (err) {
-      console.warn('Registration fallback proceeding:', err);
-      if (role === 'employer' || role === 'recruiter') {
-        navigate('/employer-dashboard');
-      } else {
-        navigate('/jobs');
-      }
+      console.warn('Registration error:', err.message);
+      setError(err.message || 'This account already exists! Go and sign in.');
     } finally {
       setLoading(false);
     }
@@ -53,7 +49,22 @@ export const Register = () => {
           Create an account as an Applicant or Recruiter in Kottayam & Kerala.
         </p>
 
-        {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
+        {error && (
+          <div className="alert alert-error" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem', padding: '1rem', borderRadius: '12px', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.95rem' }}>
+              <AlertCircle size={18} color="#dc2626" /> {error}
+            </div>
+            {error.includes('already exists') && (
+              <Link
+                to="/login"
+                className="btn btn-primary btn-sm"
+                style={{ alignSelf: 'flex-start', marginTop: '0.25rem', padding: '0.4rem 1rem', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+              >
+                <LogIn size={14} /> Click Here to Sign In
+              </Link>
+            )}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           {/* Role Switcher */}

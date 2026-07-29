@@ -8,7 +8,12 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
 
-  // Cartoon avatar fallbacks using DiceBear API
+  // Track registered emails locally for instant fallback duplicate prevention
+  const [registeredEmails, setRegisteredEmails] = useState(() => {
+    const stored = localStorage.getItem('jobnest_registered_emails');
+    return stored ? JSON.parse(stored) : ['seeker@jobnest.com', 'employer@jobnest.com'];
+  });
+
   const demoUsers = [
     {
       _id: 'usr_seeker_1',
@@ -63,8 +68,9 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = async (email, password) => {
+    const normEmail = email.toLowerCase().trim();
     try {
-      const { data } = await API.post('/auth/login', { email, password });
+      const { data } = await API.post('/auth/login', { email: normEmail, password });
       setToken(data.token);
       setUser(data.user);
       localStorage.setItem('token', data.token);
@@ -73,21 +79,21 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.warn('API login fallback proceeding.');
       
-      const found = demoUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+      const found = demoUsers.find(u => u.email.toLowerCase() === normEmail);
       let authUser = found;
 
       if (!authUser) {
-        const isEmployer = email.includes('admin') || email.includes('employer');
-        const seedName = email.split('@')[0];
+        const isEmployer = normEmail.includes('admin') || normEmail.includes('employer') || normEmail.includes('recruiter');
+        const seedName = normEmail.split('@')[0];
         authUser = {
           _id: `usr_${Date.now()}`,
           name: seedName.toUpperCase(),
-          email: email,
+          email: normEmail,
           role: isEmployer ? 'employer' : 'seeker',
           phone: '+91 98765 43210',
           location: 'Kottayam Town, Kerala',
           bio: 'Registered JobNest member',
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${seedName}`,
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seedName)}`,
           savedJobs: []
         };
       }
@@ -102,20 +108,37 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (name, email, password, role, phone, location) => {
+    const normEmail = email.toLowerCase().trim();
+
+    // Check if email already registered locally
+    if (registeredEmails.includes(normEmail)) {
+      throw new Error('This account already exists! Go and sign in.');
+    }
+
     try {
-      const { data } = await API.post('/auth/register', { name, email, password, role, phone, location });
+      const { data } = await API.post('/auth/register', { name, email: normEmail, password, role, phone, location });
       setToken(data.token);
       setUser(data.user);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
+
+      const updatedList = [...registeredEmails, normEmail];
+      setRegisteredEmails(updatedList);
+      localStorage.setItem('jobnest_registered_emails', JSON.stringify(updatedList));
+
       return data.user;
     } catch (err) {
+      const serverErrorMsg = err.response?.data?.message;
+      if (serverErrorMsg && serverErrorMsg.includes('already exists')) {
+        throw new Error('This account already exists! Go and sign in.');
+      }
+
       console.warn('API register fallback proceeding.');
-      const seedName = name || email.split('@')[0] || 'User';
+      const seedName = name || normEmail.split('@')[0] || 'User';
       const newUser = {
         _id: `usr_${Date.now()}`,
         name: name || 'New User',
-        email: email,
+        email: normEmail,
         role: role || 'seeker',
         phone: phone || '+91 98765 43210',
         location: location || 'Kottayam Town, Kerala',
@@ -129,6 +152,11 @@ export const AuthProvider = ({ children }) => {
       setUser(newUser);
       localStorage.setItem('token', mockToken);
       localStorage.setItem('user', JSON.stringify(newUser));
+
+      const updatedList = [...registeredEmails, normEmail];
+      setRegisteredEmails(updatedList);
+      localStorage.setItem('jobnest_registered_emails', JSON.stringify(updatedList));
+
       return newUser;
     }
   };
@@ -152,6 +180,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         token,
         loading,
         login,
