@@ -14,10 +14,12 @@ export const Navbar = () => {
 
   const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.name || 'User')}`;
 
+  const isRecruiter = user && ['employer', 'recruiter', 'admin'].includes(user.role?.toLowerCase());
+
   return (
     <nav className="navbar">
       <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap' }}>
-        {/* Brand Logo with Visible Icon Badge */}
+        {/* Brand Logo */}
         <Link to="/" className="navbar-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
           <div style={{
             width: '40px',
@@ -50,7 +52,7 @@ export const Navbar = () => {
         <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {user ? (
             <>
-              {user.role === 'employer' ? (
+              {isRecruiter ? (
                 <>
                   <Link to="/post-job" className="btn btn-primary btn-sm">
                     <PlusCircle size={16} /> Post Shift
@@ -77,7 +79,7 @@ export const Navbar = () => {
                   style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', background: '#eff6ff', border: '1px solid var(--border-subtle)' }}
                 />
                 <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)' }}>
-                  {user.role === 'employer' ? 'Recruiter' : 'Applicant'}
+                  {isRecruiter ? 'Recruiter' : 'Applicant'}
                 </span>
                 <button
                   onClick={handleLogout}

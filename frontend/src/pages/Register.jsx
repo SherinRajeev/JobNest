@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { UserPlus, AlertCircle, ShieldCheck, User } from 'lucide-react';
+import { UserPlus, AlertCircle, ShieldCheck, User, Eye, EyeOff } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 export const Register = () => {
@@ -11,6 +11,7 @@ export const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = useState('');
   const [location, setLocation] = useState('Kottayam Town, Kerala');
   const [loading, setLoading] = useState(false);
@@ -22,14 +23,15 @@ export const Register = () => {
     setError(null);
     try {
       const u = await register(name, email, password, role, phone, location);
-      if (u && u.role === 'employer') {
+      const isRecruiter = u && ['employer', 'recruiter', 'admin'].includes(u.role?.toLowerCase());
+      if (isRecruiter) {
         navigate('/employer-dashboard');
       } else {
         navigate('/jobs');
       }
     } catch (err) {
       console.warn('Registration fallback proceeding:', err);
-      if (role === 'employer') {
+      if (role === 'employer' || role === 'recruiter') {
         navigate('/employer-dashboard');
       } else {
         navigate('/jobs');
@@ -99,14 +101,37 @@ export const Register = () => {
 
           <div className="form-group">
             <label className="form-label">Password *</label>
-            <input
-              type="password"
-              placeholder="Create a secure password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="form-control"
-              required
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Create a secure password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="form-control"
+                style={{ paddingRight: '2.5rem' }}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: '0.75rem',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--text-muted)',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '2px'
+                }}
+                title={showPassword ? 'Hide Password' : 'Show Password'}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
