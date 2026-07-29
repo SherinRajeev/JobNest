@@ -4,7 +4,7 @@ import { AuthContext } from './AuthContext';
 
 export const JobContext = createContext();
 
-// Real Geodesic Haversine Distance Calculation Helper (in Kilometers)
+// Geodesic Haversine Distance Calculation Helper (in Kilometers)
 export const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
   if (!lat1 || !lon1 || !lat2 || !lon2) return 0.5;
   const R = 6371; // Earth's radius in km
@@ -38,7 +38,7 @@ export const cityCoordinatesMap = {
   'kozhikode': { lat: 11.2588, lng: 75.7804, name: 'Kozhikode' }
 };
 
-// 16 Default Sample Kerala Jobs Fallback
+// 16 Authentic Kerala Part-Time Shifts with Precise Geocoded Coordinates
 const defaultKeralaJobs = [
   {
     _id: 'job_1',
@@ -302,10 +302,9 @@ export const JobProvider = ({ children }) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   
-  // Default Permanent User Coordinates: Kottayam Town Center (9.5916, 76.5222)
+  // Permanent Reference Point: Kottayam Town Center (9.5916, 76.5222)
   const [userCoords, setUserCoords] = useState({ lat: 9.5916, lng: 76.5222 });
   const [detectedCity, setDetectedCity] = useState('Kottayam Town');
-  const [isGpsActive, setIsGpsActive] = useState(false);
 
   const [filters, setFilters] = useState({
     search: '',
@@ -327,7 +326,6 @@ export const JobProvider = ({ children }) => {
         return;
       }
     }
-    // Default Kottayam
     setUserCoords({ lat: 9.5916, lng: 76.5222 });
     setDetectedCity('Kottayam Town');
   };
@@ -338,43 +336,6 @@ export const JobProvider = ({ children }) => {
       setCityLocation(user.location);
     }
   }, [user]);
-
-  // Track User Location safely within Kerala bounds
-  const trackUserLocation = () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-
-          // Check if coordinates fall within Kerala region (8.0-12.8 N, 74.8-77.5 E)
-          if (lat >= 8.0 && lat <= 12.8 && lng >= 74.8 && lng <= 77.5) {
-            setUserCoords({ lat, lng });
-            setIsGpsActive(true);
-            setDetectedCity('Live Kerala GPS');
-          } else {
-            // Default to Kottayam Town Center if GPS returns distant IP location
-            setUserCoords({ lat: 9.5916, lng: 76.5222 });
-            setDetectedCity('Kottayam Town');
-            setIsGpsActive(false);
-          }
-        },
-        () => {
-          setUserCoords({ lat: 9.5916, lng: 76.5222 });
-          setDetectedCity('Kottayam Town');
-          setIsGpsActive(false);
-        },
-        { enableHighAccuracy: true, timeout: 5000 }
-      );
-    } else {
-      setUserCoords({ lat: 9.5916, lng: 76.5222 });
-      setDetectedCity('Kottayam Town');
-    }
-  };
-
-  useEffect(() => {
-    trackUserLocation();
-  }, []);
 
   const fetchJobs = async (customFilters = filters) => {
     setLoading(true);
@@ -410,7 +371,7 @@ export const JobProvider = ({ children }) => {
       rawList = defaultKeralaJobs;
     }
 
-    // Client-Side Filter & Precise Haversine Distance Calculation
+    // Client-Side Filter & Precise Geodesic Distance Calculation
     let filtered = rawList;
 
     if (customFilters.search) {
@@ -497,8 +458,6 @@ export const JobProvider = ({ children }) => {
         setUserCoords,
         setCityLocation,
         detectedCity,
-        isGpsActive,
-        trackUserLocation,
         toggleBookmark,
         createJobPost,
         applyJob
