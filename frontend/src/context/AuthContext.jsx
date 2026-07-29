@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
 
-  // Local user accounts database fallback with role mapping
   const [userDatabase, setUserDatabase] = useState(() => {
     const stored = localStorage.getItem('jobnest_users_db');
     if (stored) {
@@ -42,6 +41,11 @@ export const AuthProvider = ({ children }) => {
     ];
   });
 
+  const [registeredEmails, setRegisteredEmails] = useState(() => {
+    const stored = localStorage.getItem('jobnest_registered_emails');
+    return stored ? JSON.parse(stored) : ['seeker@jobnest.com', 'employer@jobnest.com'];
+  });
+
   useEffect(() => {
     const loadUser = async () => {
       const storedToken = localStorage.getItem('token');
@@ -70,36 +74,42 @@ export const AuthProvider = ({ children }) => {
     loadUser();
   }, [token]);
 
-  const login = async (email, password) => {
+  const login = async (email, password, selectedRole) => {
     const normEmail = email.toLowerCase().trim();
+    const targetRole = selectedRole === 'employer' || selectedRole === 'recruiter' ? 'employer' : 'seeker';
+
     try {
-      const { data } = await API.post('/auth/login', { email: normEmail, password });
+      const { data } = await API.post('/auth/login', { email: normEmail, password, role: targetRole });
+      let authUser = data.user;
+      if (selectedRole === 'employer' && authUser.role !== 'employer') {
+        authUser.role = 'employer';
+      }
       setToken(data.token);
-      setUser(data.user);
+      setUser(authUser);
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      return data.user;
+      localStorage.setItem('user', JSON.stringify(authUser));
+      return authUser;
     } catch (err) {
       console.warn('API login fallback proceeding.');
       
-      // Look up user in local userDatabase to strictly preserve Recruiter vs Applicant role
       const found = userDatabase.find(u => u.email.toLowerCase() === normEmail);
-      let authUser = found;
+      let authUser = found ? { ...found } : null;
 
       if (!authUser) {
-        const isEmployer = normEmail.includes('admin') || normEmail.includes('employer') || normEmail.includes('recruiter');
         const seedName = normEmail.split('@')[0];
         authUser = {
           _id: `usr_${Date.now()}`,
           name: seedName.toUpperCase(),
           email: normEmail,
-          role: isEmployer ? 'employer' : 'seeker',
+          role: targetRole,
           phone: '+91 98765 43210',
           location: 'Kottayam Town, Kerala',
-          bio: isEmployer ? 'Recruiter Account' : 'Applicant Account',
+          bio: targetRole === 'employer' ? 'Recruiter Account' : 'Applicant Account',
           avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seedName)}`,
           savedJobs: []
         };
+      } else if (selectedRole === 'employer') {
+        authUser.role = 'employer';
       }
 
       const mockToken = `mock_token_${Date.now()}`;
@@ -114,7 +124,6 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password, role, phone, location, customAvatar) => {
     const normEmail = email.toLowerCase().trim();
 
-    // Check if email already registered in local userDatabase
     const existing = userDatabase.find(u => u.email.toLowerCase() === normEmail);
     if (existing) {
       const existingRoleTitle = existing.role === 'employer' ? 'Recruiter' : 'Applicant';

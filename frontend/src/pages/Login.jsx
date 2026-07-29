@@ -19,19 +19,13 @@ export const Login = () => {
     setLoading(true);
     setError(null);
     try {
-      const u = await login(email, password);
-      const isRecruiterUser = u && ['employer', 'recruiter', 'admin'].includes(u.role?.toLowerCase());
+      const u = await login(email, password, role);
+      const isRecruiterUser = role === 'employer' || (u && ['employer', 'recruiter', 'admin'].includes(u.role?.toLowerCase()));
 
-      // Validate selected login tab vs account role
-      if (role === 'employer' && !isRecruiterUser) {
-        // User picked Recruiter tab but account is Applicant
-        u.role = 'employer'; // Upgrade session for requested role
-        localStorage.setItem('user', JSON.stringify(u));
-        navigate('/employer-dashboard');
-      } else if (isRecruiterUser || role === 'employer') {
-        navigate('/employer-dashboard');
+      if (isRecruiterUser) {
+        navigate('/employer-dashboard', { replace: true });
       } else {
-        navigate('/jobs');
+        navigate('/jobs', { replace: true });
       }
     } catch (err) {
       console.warn('Login error:', err);
