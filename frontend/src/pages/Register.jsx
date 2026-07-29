@@ -44,7 +44,7 @@ export const Register = () => {
       <div className="card-glass" style={{ padding: '2.25rem' }}>
         <h1 style={{ fontSize: '1.8rem', textAlign: 'center', marginBottom: '0.5rem' }}>Join <span className="gradient-text">JobNest</span></h1>
         <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-          Create an account as an applicant or business recruiter in Kottayam & Kerala.
+          Create an account as an Applicant or Recruiter in Kottayam & Kerala.
         </p>
 
         {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
@@ -68,7 +68,7 @@ export const Register = () => {
                 onClick={() => setRole('employer')}
                 style={{ padding: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
               >
-                <ShieldCheck size={16} /> Admin / Recruiter
+                <ShieldCheck size={16} /> Recruiter
               </button>
             </div>
           </div>

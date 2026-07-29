@@ -25,7 +25,7 @@ export const Login = () => {
       }
     } catch (err) {
       console.warn('Login fallback proceeding:', err);
-      if (email.includes('admin') || email.includes('employer')) {
+      if (email.includes('recruiter') || email.includes('employer')) {
         navigate('/employer-dashboard');
       } else {
         navigate('/jobs');
@@ -40,7 +40,7 @@ export const Login = () => {
       <div className="card-glass" style={{ padding: '2.25rem' }}>
         <h1 style={{ fontSize: '1.8rem', textAlign: 'center', marginBottom: '0.5rem' }}>Account <span className="gradient-text">Sign In</span></h1>
         <p style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.75rem' }}>
-          Sign in to your JobNest applicant or admin account.
+          Sign in to your Applicant or Recruiter account.
         </p>
 
         {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
