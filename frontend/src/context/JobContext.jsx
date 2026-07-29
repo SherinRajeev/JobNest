@@ -6,7 +6,7 @@ export const JobContext = createContext();
 
 // Real Geodesic Haversine Distance Calculation Helper (in Kilometers)
 export const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
-  if (!lat1 || !lon1 || !lat2 || !lon2) return 1.2;
+  if (!lat1 || !lon1 || !lat2 || !lon2) return 0.5;
   const R = 6371; // Earth's radius in km
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -17,7 +17,24 @@ export const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return parseFloat((R * c).toFixed(1));
+  const dist = R * c;
+  return parseFloat(dist.toFixed(1));
+};
+
+// Known Coordinates Lookup Map for Kerala Locations
+export const cityCoordinatesMap = {
+  'kottayam': { lat: 9.5916, lng: 76.5222, name: 'Kottayam Town' },
+  'kanjikuzhy': { lat: 9.5916, lng: 76.5330, name: 'Kanjikuzhy, Kottayam' },
+  'thirunakkara': { lat: 9.5890, lng: 76.5210, name: 'Thirunakkara, Kottayam' },
+  'collectorate': { lat: 9.5950, lng: 76.5260, name: 'Collectorate, Kottayam' },
+  'nagampadam': { lat: 9.6010, lng: 76.5280, name: 'Nagampadam, Kottayam' },
+  'kochi': { lat: 9.9790, lng: 76.2750, name: 'Kochi' },
+  'edappally': { lat: 10.0270, lng: 76.3080, name: 'Edappally, Kochi' },
+  'kakkanad': { lat: 10.0120, lng: 76.3630, name: 'Kakkanad, Kochi' },
+  'trivandrum': { lat: 8.5241, lng: 76.8944, name: 'Thiruvananthapuram' },
+  'thiruvananthapuram': { lat: 8.5241, lng: 76.8944, name: 'Thiruvananthapuram' },
+  'thrissur': { lat: 10.5276, lng: 76.2144, name: 'Thrissur' },
+  'kozhikode': { lat: 11.2588, lng: 75.7804, name: 'Kozhikode' }
 };
 
 // 16 Default Sample Kerala Jobs Fallback
@@ -283,7 +300,8 @@ const defaultKeralaJobs = [
 export const JobProvider = ({ children }) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [userCoords, setUserCoords] = useState({ lat: 9.5916, lng: 76.5222 }); // Default Kottayam Town
+  // Default Center: Kottayam Town Center (9.5916, 76.5222)
+  const [userCoords, setUserCoords] = useState({ lat: 9.5916, lng: 76.5222 });
   const [detectedCity, setDetectedCity] = useState('Kottayam Town');
   const [isGpsActive, setIsGpsActive] = useState(false);
 
@@ -296,6 +314,20 @@ export const JobProvider = ({ children }) => {
   });
 
   const { user, updateUserSavedJobs } = useContext(AuthContext);
+
+  // Sync user location profile if user specifies Kottayam/Kochi
+  useEffect(() => {
+    if (user?.location) {
+      const loc = user.location.toLowerCase();
+      for (const [key, cityInfo] of Object.entries(cityCoordinatesMap)) {
+        if (loc.includes(key)) {
+          setUserCoords({ lat: cityInfo.lat, lng: cityInfo.lng });
+          setDetectedCity(cityInfo.name);
+          break;
+        }
+      }
+    }
+  }, [user]);
 
   // Auto-track Visitor's Live GPS Location
   const trackUserLocation = () => {
@@ -318,6 +350,8 @@ export const JobProvider = ({ children }) => {
         },
         (error) => {
           console.log('GPS tracking defaulting to Kottayam Town center.');
+          setUserCoords({ lat: 9.5916, lng: 76.5222 });
+          setDetectedCity('Kottayam Town');
           setIsGpsActive(false);
         },
         { enableHighAccuracy: true, timeout: 10000 }
@@ -332,6 +366,18 @@ export const JobProvider = ({ children }) => {
   const fetchJobs = async (customFilters = filters) => {
     setLoading(true);
     let rawList = [];
+
+    // If search keyword includes a known city (e.g. "Kochi" or "Kottayam"), update userCoords dynamically!
+    if (customFilters.search) {
+      const s = customFilters.search.toLowerCase();
+      for (const [key, cityInfo] of Object.entries(cityCoordinatesMap)) {
+        if (s.includes(key)) {
+          setUserCoords({ lat: cityInfo.lat, lng: cityInfo.lng });
+          setDetectedCity(cityInfo.name);
+          break;
+        }
+      }
+    }
 
     try {
       const params = new URLSearchParams();
@@ -348,11 +394,11 @@ export const JobProvider = ({ children }) => {
         rawList = defaultKeralaJobs;
       }
     } catch (err) {
-      console.warn('API fetch failed or offline, using default sample jobs fallback:', err.message);
+      console.warn('API fetch failed, using default sample jobs fallback:', err.message);
       rawList = defaultKeralaJobs;
     }
 
-    // Apply Client-Side Filter & Distance Calculation Fallback
+    // Client-Side Filter & Accurate Haversine Distance Calculation
     let filtered = rawList;
 
     if (customFilters.search) {
@@ -385,7 +431,6 @@ export const JobProvider = ({ children }) => {
       return { ...j, distanceKm: dist };
     });
 
-    // Filter by maxDistance if specified
     const finalJobs = processedJobs.filter(j => j.distanceKm <= (customFilters.maxDistance || 300));
     finalJobs.sort((a, b) => a.distanceKm - b.distanceKm);
 
@@ -437,6 +482,7 @@ export const JobProvider = ({ children }) => {
         setFilters,
         fetchJobs,
         userCoords,
+        setUserCoords,
         detectedCity,
         isGpsActive,
         trackUserLocation,

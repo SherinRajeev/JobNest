@@ -26,7 +26,8 @@ export const JobCard = ({ job, onViewDetails }) => {
         cursor: 'pointer',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1rem'
+        gap: '1rem',
+        width: '100%'
       }}
     >
       {/* Header Row: Company Icon, Title, and Bookmark */}
@@ -93,12 +94,12 @@ export const JobCard = ({ job, onViewDetails }) => {
         {job.description}
       </p>
 
-      {/* Location Row */}
+      {/* Location Row with Calculated Distance */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.88rem', color: '#0284c7', fontWeight: 500 }}>
         <MapPin size={16} /> {job.locationName} {job.distanceKm !== undefined ? `(${job.distanceKm} km away)` : ''}
       </div>
 
-      {/* Bottom Footer: Left = Pay Badge, Right = Details Button */}
+      {/* Card Footer: Pay Badge on LEFT, Details Button on FAR RIGHT */}
       <div style={{
         display: 'flex',
         justify: 'space-between',
@@ -125,12 +126,12 @@ export const JobCard = ({ job, onViewDetails }) => {
           ₹{job.hourlyRate}<span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#047857' }}>/hr</span>
         </div>
 
-        {/* Right Side: Details Button */}
+        {/* Far Right Side: Details Button */}
         <button
           type="button"
           onClick={handleDetailsClick}
           className="btn btn-primary btn-sm"
-          style={{ padding: '0.5rem 1.1rem', borderRadius: '10px', fontSize: '0.88rem' }}
+          style={{ padding: '0.5rem 1.2rem', borderRadius: '10px', fontSize: '0.88rem', marginLeft: 'auto' }}
         >
           Details <ArrowRight size={15} />
         </button>
