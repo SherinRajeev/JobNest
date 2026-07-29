@@ -4,29 +4,33 @@ import { memoryStore } from '../config/store.js';
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, phone, location } = req.body;
+    const { name, email, password, role, phone, location, avatar } = req.body;
 
     if (!name || !email || !password || !phone) {
       return res.status(400).json({ message: 'Please provide all required fields including Phone Number' });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
+    const assignedRole = role === 'employer' || role === 'recruiter' ? 'employer' : 'seeker';
 
     if (req.dbConnected) {
-      const userExists = await User.findOne({ email: normalizedEmail });
+      const existingUser = await User.findOne({ email: normalizedEmail });
 
-      if (userExists) {
-        return res.status(400).json({ message: 'This account already exists! Go and sign in.' });
+      if (existingUser) {
+        const existingRoleTitle = existingUser.role === 'employer' ? 'Recruiter' : 'Applicant';
+        return res.status(400).json({
+          message: `This account already exists as a ${existingRoleTitle}! Go and sign in.`
+        });
       }
 
       const user = await User.create({
         name,
         email: normalizedEmail,
         password,
-        role: role || 'seeker',
+        role: assignedRole,
         phone,
         location: location || 'Kottayam Town, Kerala',
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`
+        avatar: avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`
       });
 
       return res.status(201).json({
@@ -43,10 +47,13 @@ export const registerUser = async (req, res) => {
         token: generateToken(user._id)
       });
     } else {
-      // Memory Store Check
+      // Memory Store Duplicate Check
       const existingInMemory = memoryStore.users.find(u => u.email.toLowerCase() === normalizedEmail);
       if (existingInMemory) {
-        return res.status(400).json({ message: 'This account already exists! Go and sign in.' });
+        const existingRoleTitle = existingInMemory.role === 'employer' ? 'Recruiter' : 'Applicant';
+        return res.status(400).json({
+          message: `This account already exists as a ${existingRoleTitle}! Go and sign in.`
+        });
       }
 
       const newUser = {
@@ -54,10 +61,10 @@ export const registerUser = async (req, res) => {
         name,
         email: normalizedEmail,
         password,
-        role: role || 'seeker',
+        role: assignedRole,
         phone,
         location: location || 'Kottayam Town, Kerala',
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
+        avatar: avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
         savedJobs: []
       };
 

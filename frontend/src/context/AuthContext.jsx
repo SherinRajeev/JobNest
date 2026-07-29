@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [loading, setLoading] = useState(true);
 
-  // Local user accounts database fallback
+  // Local user accounts database fallback with role mapping
   const [userDatabase, setUserDatabase] = useState(() => {
     const stored = localStorage.getItem('jobnest_users_db');
     if (stored) {
@@ -40,11 +40,6 @@ export const AuthProvider = ({ children }) => {
         savedJobs: []
       }
     ];
-  });
-
-  const [registeredEmails, setRegisteredEmails] = useState(() => {
-    const stored = localStorage.getItem('jobnest_registered_emails');
-    return stored ? JSON.parse(stored) : ['seeker@jobnest.com', 'employer@jobnest.com'];
   });
 
   useEffect(() => {
@@ -87,7 +82,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.warn('API login fallback proceeding.');
       
-      // Look up user in local userDatabase to preserve Recruiter vs Applicant role
+      // Look up user in local userDatabase to strictly preserve Recruiter vs Applicant role
       const found = userDatabase.find(u => u.email.toLowerCase() === normEmail);
       let authUser = found;
 
@@ -101,7 +96,7 @@ export const AuthProvider = ({ children }) => {
           role: isEmployer ? 'employer' : 'seeker',
           phone: '+91 98765 43210',
           location: 'Kottayam Town, Kerala',
-          bio: 'Registered JobNest member',
+          bio: isEmployer ? 'Recruiter Account' : 'Applicant Account',
           avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seedName)}`,
           savedJobs: []
         };
@@ -119,8 +114,11 @@ export const AuthProvider = ({ children }) => {
   const register = async (name, email, password, role, phone, location, customAvatar) => {
     const normEmail = email.toLowerCase().trim();
 
-    if (registeredEmails.includes(normEmail)) {
-      throw new Error('This account already exists! Go and sign in.');
+    // Check if email already registered in local userDatabase
+    const existing = userDatabase.find(u => u.email.toLowerCase() === normEmail);
+    if (existing) {
+      const existingRoleTitle = existing.role === 'employer' ? 'Recruiter' : 'Applicant';
+      throw new Error(`This account already exists as a ${existingRoleTitle}! Go and sign in.`);
     }
 
     const selectedAvatar = customAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`;
@@ -133,15 +131,15 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
 
-      const updatedList = [...registeredEmails, normEmail];
-      setRegisteredEmails(updatedList);
-      localStorage.setItem('jobnest_registered_emails', JSON.stringify(updatedList));
+      const updatedDb = [data.user, ...userDatabase];
+      setUserDatabase(updatedDb);
+      localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
 
       return data.user;
     } catch (err) {
       const serverErrorMsg = err.response?.data?.message;
       if (serverErrorMsg && serverErrorMsg.includes('already exists')) {
-        throw new Error('This account already exists! Go and sign in.');
+        throw new Error(serverErrorMsg);
       }
 
       console.warn('API register fallback proceeding.');
@@ -166,10 +164,6 @@ export const AuthProvider = ({ children }) => {
       const updatedDb = [newUser, ...userDatabase];
       setUserDatabase(updatedDb);
       localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
-
-      const updatedList = [...registeredEmails, normEmail];
-      setRegisteredEmails(updatedList);
-      localStorage.setItem('jobnest_registered_emails', JSON.stringify(updatedList));
 
       return newUser;
     }
