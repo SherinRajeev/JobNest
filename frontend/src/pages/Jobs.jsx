@@ -28,7 +28,7 @@ export const Jobs = () => {
             className={`btn btn-sm ${viewMode === 'grid' ? 'btn-primary' : 'btn-secondary'}`}
             style={{ border: 'none' }}
           >
-            <LayoutGrid size={15} /> Grid
+            <LayoutGrid size={15} /> Feed List
           </button>
           <button
             onClick={() => setViewMode('map')}
@@ -90,7 +90,8 @@ export const Jobs = () => {
           ) : viewMode === 'map' ? (
             <MapView jobs={jobs} onSelectJob={j => setSelectedJob(j)} />
           ) : (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            /* 1 Job Card per Row Stacked Layout */
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {jobs.map(job => (
                 <JobCard key={job._id} job={job} onViewDetails={j => setSelectedJob(j)} />
               ))}

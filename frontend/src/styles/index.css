@@ -213,11 +213,11 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--border-subtle);
 }
 
-/* Jobs Grid Layout */
+/* Single Job Card per Row Stacked Layout */
 .jobs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
 /* Form Components */
