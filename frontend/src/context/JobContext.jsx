@@ -29,6 +29,7 @@ export const cityCoordinatesMap = {
   'collectorate': { lat: 9.5950, lng: 76.5260, name: 'Collectorate, Kottayam' },
   'nagampadam': { lat: 9.6010, lng: 76.5280, name: 'Nagampadam, Kottayam' },
   'kochi': { lat: 9.9790, lng: 76.2750, name: 'Kochi' },
+  'ernakulam': { lat: 9.9790, lng: 76.2750, name: 'Ernakulam, Kochi' },
   'edappally': { lat: 10.0270, lng: 76.3080, name: 'Edappally, Kochi' },
   'kakkanad': { lat: 10.0120, lng: 76.3630, name: 'Kakkanad, Kochi' },
   'trivandrum': { lat: 8.5241, lng: 76.8944, name: 'Thiruvananthapuram' },
@@ -300,7 +301,8 @@ const defaultKeralaJobs = [
 export const JobProvider = ({ children }) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  // Default Center: Kottayam Town Center (9.5916, 76.5222)
+  
+  // Default Permanent User Coordinates: Kottayam Town Center (9.5916, 76.5222)
   const [userCoords, setUserCoords] = useState({ lat: 9.5916, lng: 76.5222 });
   const [detectedCity, setDetectedCity] = useState('Kottayam Town');
   const [isGpsActive, setIsGpsActive] = useState(false);
@@ -315,47 +317,58 @@ export const JobProvider = ({ children }) => {
 
   const { user, updateUserSavedJobs } = useContext(AuthContext);
 
-  // Sync user location profile if user specifies Kottayam/Kochi
+  // Set city location explicitly
+  const setCityLocation = (cityName) => {
+    const key = cityName.toLowerCase();
+    for (const [mapKey, cityInfo] of Object.entries(cityCoordinatesMap)) {
+      if (key.includes(mapKey)) {
+        setUserCoords({ lat: cityInfo.lat, lng: cityInfo.lng });
+        setDetectedCity(cityInfo.name);
+        return;
+      }
+    }
+    // Default Kottayam
+    setUserCoords({ lat: 9.5916, lng: 76.5222 });
+    setDetectedCity('Kottayam Town');
+  };
+
+  // Sync user location profile
   useEffect(() => {
     if (user?.location) {
-      const loc = user.location.toLowerCase();
-      for (const [key, cityInfo] of Object.entries(cityCoordinatesMap)) {
-        if (loc.includes(key)) {
-          setUserCoords({ lat: cityInfo.lat, lng: cityInfo.lng });
-          setDetectedCity(cityInfo.name);
-          break;
-        }
-      }
+      setCityLocation(user.location);
     }
   }, [user]);
 
-  // Auto-track Visitor's Live GPS Location
+  // Track User Location safely within Kerala bounds
   const trackUserLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           const lat = position.coords.latitude;
           const lng = position.coords.longitude;
-          setUserCoords({ lat, lng });
-          setIsGpsActive(true);
 
-          try {
-            const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
-            const data = await res.json();
-            const townName = data.address?.town || data.address?.city || data.address?.suburb || data.address?.county || 'Your Area';
-            setDetectedCity(townName);
-          } catch (e) {
-            setDetectedCity('Live Location');
+          // Check if coordinates fall within Kerala region (8.0-12.8 N, 74.8-77.5 E)
+          if (lat >= 8.0 && lat <= 12.8 && lng >= 74.8 && lng <= 77.5) {
+            setUserCoords({ lat, lng });
+            setIsGpsActive(true);
+            setDetectedCity('Live Kerala GPS');
+          } else {
+            // Default to Kottayam Town Center if GPS returns distant IP location
+            setUserCoords({ lat: 9.5916, lng: 76.5222 });
+            setDetectedCity('Kottayam Town');
+            setIsGpsActive(false);
           }
         },
-        (error) => {
-          console.log('GPS tracking defaulting to Kottayam Town center.');
+        () => {
           setUserCoords({ lat: 9.5916, lng: 76.5222 });
           setDetectedCity('Kottayam Town');
           setIsGpsActive(false);
         },
-        { enableHighAccuracy: true, timeout: 10000 }
+        { enableHighAccuracy: true, timeout: 5000 }
       );
+    } else {
+      setUserCoords({ lat: 9.5916, lng: 76.5222 });
+      setDetectedCity('Kottayam Town');
     }
   };
 
@@ -367,7 +380,6 @@ export const JobProvider = ({ children }) => {
     setLoading(true);
     let rawList = [];
 
-    // If search keyword includes a known city (e.g. "Kochi" or "Kottayam"), update userCoords dynamically!
     if (customFilters.search) {
       const s = customFilters.search.toLowerCase();
       for (const [key, cityInfo] of Object.entries(cityCoordinatesMap)) {
@@ -394,11 +406,11 @@ export const JobProvider = ({ children }) => {
         rawList = defaultKeralaJobs;
       }
     } catch (err) {
-      console.warn('API fetch failed, using default sample jobs fallback:', err.message);
+      console.warn('API fetch fallback:', err.message);
       rawList = defaultKeralaJobs;
     }
 
-    // Client-Side Filter & Accurate Haversine Distance Calculation
+    // Client-Side Filter & Precise Haversine Distance Calculation
     let filtered = rawList;
 
     if (customFilters.search) {
@@ -483,6 +495,7 @@ export const JobProvider = ({ children }) => {
         fetchJobs,
         userCoords,
         setUserCoords,
+        setCityLocation,
         detectedCity,
         isGpsActive,
         trackUserLocation,
