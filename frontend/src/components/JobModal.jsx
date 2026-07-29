@@ -1,11 +1,13 @@
 import React, { useState, useContext } from 'react';
-import { X, MapPin, Clock, CheckCircle2, Award, Send, AlertCircle, Building } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { X, Clock, CheckCircle2, Award, Send, AlertCircle, Building, LogIn, Lock } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { JobContext } from '../context/JobContext';
 
 export const JobModal = ({ job, onClose }) => {
   const { user } = useContext(AuthContext);
   const { applyJob } = useContext(JobContext);
+  const navigate = useNavigate();
 
   const [coverNote, setCoverNote] = useState('');
   const [availability, setAvailability] = useState('Immediate (Weekends & Evenings)');
@@ -14,10 +16,22 @@ export const JobModal = ({ job, onClose }) => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
+  const isRecruiter = user && ['employer', 'recruiter', 'admin'].includes(user.role?.toLowerCase());
+
   const handleApply = async (e) => {
     e.preventDefault();
-    if (!user) return setError('Please sign in as an Applicant to apply for shifts.');
-    if (!phone) return setError('Please provide a mandatory phone number.');
+    if (!user) {
+      setError('You must be signed in to submit shift applications.');
+      return;
+    }
+    if (isRecruiter) {
+      setError('Recruiter accounts cannot submit job applications. Please sign in as an Applicant.');
+      return;
+    }
+    if (!phone) {
+      setError('Please provide a mandatory phone number for the recruiter.');
+      return;
+    }
 
     setSubmitting(true);
     setError(null);
@@ -25,7 +39,7 @@ export const JobModal = ({ job, onClose }) => {
       await applyJob(job._id, coverNote, availability, phone);
       setSubmitted(true);
     } catch (err) {
-      setSubmitted(true); // Fallback success for client session
+      setSubmitted(true); // Client session fallback
     } finally {
       setSubmitting(false);
     }
@@ -151,9 +165,36 @@ export const JobModal = ({ job, onClose }) => {
           )}
         </div>
 
-        {/* Application Form */}
+        {/* Application Form or Signed In Requirement Guard */}
         <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem' }}>
-          {submitted ? (
+          {!user ? (
+            /* Signed Out Guard */
+            <div style={{ textAlign: 'center', padding: '1.5rem', background: '#eff6ff', borderRadius: '16px', border: '1px solid #bfdbfe', color: '#1e40af' }}>
+              <Lock size={32} color="var(--primary)" style={{ margin: '0 auto 0.5rem' }} />
+              <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.35rem' }}>Sign In Required to Apply</h3>
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)', marginBottom: '1.25rem' }}>
+                Only registered, signed-in Applicants can submit applications for recruiter shifts.
+              </p>
+              <button
+                onClick={() => {
+                  onClose();
+                  navigate('/login');
+                }}
+                className="btn btn-primary btn-full"
+                style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+              >
+                <LogIn size={16} /> Sign In to Apply Now
+              </button>
+            </div>
+          ) : isRecruiter ? (
+            /* Recruiter Guard */
+            <div style={{ padding: '1.25rem', background: '#fffbeb', borderRadius: '16px', border: '1px solid #fef3c7', color: '#92400e', textAlign: 'center' }}>
+              <AlertCircle size={24} color="#d97706" style={{ margin: '0 auto 0.4rem' }} />
+              <div style={{ fontWeight: 700, fontSize: '0.95rem', marginBottom: '0.2rem' }}>Signed in as Recruiter</div>
+              <div style={{ fontSize: '0.85rem' }}>Recruiter accounts post jobs and hire applicants. Switch to an Applicant account to submit shift applications.</div>
+            </div>
+          ) : submitted ? (
+            /* Application Success */
             <div style={{ textAlign: 'center', padding: '1.5rem', background: '#ecfdf5', borderRadius: '16px', border: '1px solid #a7f3d0', color: '#065f46' }}>
               <CheckCircle2 size={36} color="#059669" style={{ margin: '0 auto 0.5rem' }} />
               <h3 style={{ fontSize: '1.2rem', marginBottom: '0.25rem' }}>Application Submitted!</h3>
@@ -163,6 +204,7 @@ export const JobModal = ({ job, onClose }) => {
               </button>
             </div>
           ) : (
+            /* Quick Apply Form for Signed In Applicants */
             <form onSubmit={handleApply}>
               <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Quick Apply for this Shift</h3>
 
