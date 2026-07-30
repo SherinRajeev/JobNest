@@ -83,46 +83,61 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
   try {
     const { email, password, role } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Please provide both email and password' });
+    }
+
     const normalizedEmail = email.toLowerCase().trim();
     const targetRole = (role && (role.toLowerCase() === 'employer' || role.toLowerCase() === 'recruiter')) ? 'employer' : null;
 
     if (req.dbConnected) {
       const user = await User.findOne({ email: normalizedEmail });
 
-      if (user && (await user.matchPassword(password))) {
-        if (targetRole && user.role !== targetRole) {
-          user.role = targetRole;
-          await user.save();
-        }
-
-        return res.json({
-          user: {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-            phone: user.phone,
-            location: user.location,
-            avatar: user.avatar,
-            savedJobs: user.savedJobs
-          },
-          token: generateToken(user._id)
-        });
+      if (!user) {
+        return res.status(404).json({ message: 'Account not found. Please register first!' });
       }
 
-      return res.status(401).json({ message: 'Invalid email or password' });
+      const isMatch = await user.matchPassword(password);
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Invalid password. Please check your password.' });
+      }
+
+      if (targetRole && user.role !== targetRole) {
+        user.role = targetRole;
+        await user.save();
+      }
+
+      return res.json({
+        user: {
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          phone: user.phone,
+          location: user.location,
+          avatar: user.avatar,
+          savedJobs: user.savedJobs
+        },
+        token: generateToken(user._id)
+      });
     } else {
       let user = memoryStore.users.find(u => u.email.toLowerCase() === normalizedEmail);
-      if (user) {
-        if (targetRole) {
-          user.role = targetRole;
-        }
-        return res.json({
-          user,
-          token: `mock_token_${Date.now()}`
-        });
+      if (!user) {
+        return res.status(404).json({ message: 'Account not found. Please register first!' });
       }
-      return res.status(401).json({ message: 'Invalid email or password' });
+
+      if (user.password && user.password !== password) {
+        return res.status(401).json({ message: 'Invalid password. Please check your password.' });
+      }
+
+      if (targetRole) {
+        user.role = targetRole;
+      }
+
+      return res.json({
+        user,
+        token: `mock_token_${Date.now()}`
+      });
     }
   } catch (error) {
     res.status(500).json({ message: error.message });

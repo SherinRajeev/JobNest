@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogIn, AlertCircle, Eye, EyeOff, User, ShieldCheck } from 'lucide-react';
+import { LogIn, AlertCircle, Eye, EyeOff, User, ShieldCheck, UserPlus } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
 export const Login = () => {
@@ -28,8 +28,8 @@ export const Login = () => {
         navigate('/jobs', { replace: true });
       }
     } catch (err) {
-      console.warn('Login error:', err);
-      setError('Login failed. Please check your credentials.');
+      console.warn('Login error:', err.message);
+      setError(err.message || 'Login failed. Please check your email and password.');
     } finally {
       setLoading(false);
     }
@@ -47,7 +47,22 @@ export const Login = () => {
             : 'Sign in to browse & apply for part-time shifts in Kottayam & Kerala.'}
         </p>
 
-        {error && <div className="alert alert-error"><AlertCircle size={16} /> {error}</div>}
+        {error && (
+          <div className="alert alert-error" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem', padding: '1rem', borderRadius: '12px', background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, fontSize: '0.92rem' }}>
+              <AlertCircle size={18} color="#dc2626" /> {error}
+            </div>
+            {error.includes('register') && (
+              <Link
+                to="/register"
+                className="btn btn-primary btn-sm"
+                style={{ alignSelf: 'flex-start', marginTop: '0.25rem', padding: '0.4rem 1rem', fontSize: '0.85rem', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+              >
+                <UserPlus size={14} /> Click Here to Register Account
+              </Link>
+            )}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           {/* Role Switcher Tabs */}

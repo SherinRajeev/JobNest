@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }) => {
         _id: 'usr_seeker_1',
         name: 'Rohan Sharma',
         email: 'seeker@jobnest.com',
+        password: 'password123',
         role: 'seeker',
         phone: '+91 98765 43210',
         location: 'Kottayam Town, Kerala',
@@ -31,6 +32,7 @@ export const AuthProvider = ({ children }) => {
         _id: 'usr_employer_1',
         name: 'Priya Nair',
         email: 'employer@jobnest.com',
+        password: 'password123',
         role: 'employer',
         phone: '+91 91234 56789',
         location: 'Kanjikuzhy, Kottayam',
@@ -84,33 +86,25 @@ export const AuthProvider = ({ children }) => {
       setUser(authUser);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(authUser));
-
-      // Sync local user database
-      const updatedDb = userDatabase.map(u => u.email.toLowerCase() === normEmail ? { ...u, role: authUser.role } : u);
-      setUserDatabase(updatedDb);
-      localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
-
       return authUser;
     } catch (err) {
-      console.warn('API login fallback proceeding.');
-      
-      const found = userDatabase.find(u => u.email.toLowerCase() === normEmail);
-      let authUser = found ? { ...found } : null;
+      const serverMsg = err.response?.data?.message;
+      if (serverMsg) {
+        throw new Error(serverMsg);
+      }
 
-      if (!authUser) {
-        const seedName = normEmail.split('@')[0];
-        authUser = {
-          _id: `usr_${Date.now()}`,
-          name: seedName.toUpperCase(),
-          email: normEmail,
-          role: targetRole,
-          phone: '+91 98765 43210',
-          location: 'Kottayam Town, Kerala',
-          bio: targetRole === 'employer' ? 'Recruiter Account' : 'Applicant Account',
-          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seedName)}`,
-          savedJobs: []
-        };
-      } else if (isRecruiter) {
+      // Local Database Verification Fallback
+      const found = userDatabase.find(u => u.email.toLowerCase() === normEmail);
+      if (!found) {
+        throw new Error('Account not found. Please register first!');
+      }
+
+      if (found.password && found.password !== password) {
+        throw new Error('Invalid password. Please check your password.');
+      }
+
+      let authUser = { ...found };
+      if (isRecruiter) {
         authUser.role = 'employer';
       }
 
@@ -119,6 +113,11 @@ export const AuthProvider = ({ children }) => {
       setUser(authUser);
       localStorage.setItem('token', mockToken);
       localStorage.setItem('user', JSON.stringify(authUser));
+
+      const updatedDb = userDatabase.map(u => u.email.toLowerCase() === normEmail ? { ...u, role: authUser.role } : u);
+      setUserDatabase(updatedDb);
+      localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
+
       return authUser;
     }
   };
@@ -143,7 +142,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(authUser));
 
-      const updatedDb = [authUser, ...userDatabase];
+      const updatedDb = [{ ...authUser, password }, ...userDatabase];
       setUserDatabase(updatedDb);
       localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
 
@@ -159,6 +158,7 @@ export const AuthProvider = ({ children }) => {
         _id: `usr_${Date.now()}`,
         name: name || 'New User',
         email: normEmail,
+        password,
         role: assignedRole,
         phone: phone || '+91 98765 43210',
         location: location || 'Kottayam Town, Kerala',
