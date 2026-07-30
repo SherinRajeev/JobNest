@@ -9,15 +9,17 @@ export const ProtectedRoute = ({ children, requiredRole }) => {
 
   if (!user) return <Navigate to="/login" replace />;
 
+  const storedRole = localStorage.getItem('jobnest_user_role')?.toLowerCase();
+  const currentRole = user?.role?.toLowerCase() || storedRole || '';
+
   if (requiredRole) {
-    const userRole = user.role?.toLowerCase() || '';
     if (requiredRole === 'employer') {
-      const isRecruiterUser = ['employer', 'recruiter', 'admin'].includes(userRole);
+      const isRecruiterUser = currentRole === 'employer' || currentRole === 'recruiter' || currentRole === 'admin' || storedRole === 'employer';
       if (!isRecruiterUser) {
         return <Navigate to="/jobs" replace />;
       }
     } else if (requiredRole === 'seeker') {
-      if (userRole === 'employer' || userRole === 'recruiter' || userRole === 'admin') {
+      if (currentRole === 'employer' || currentRole === 'recruiter' || currentRole === 'admin' || storedRole === 'employer') {
         return <Navigate to="/employer-dashboard" replace />;
       }
     }

@@ -50,7 +50,12 @@ export const AuthProvider = ({ children }) => {
 
       if (storedUser) {
         try {
-          setUser(JSON.parse(storedUser));
+          let parsed = JSON.parse(storedUser);
+          const overrideRole = localStorage.getItem('jobnest_user_role');
+          if (overrideRole === 'employer') {
+            parsed.role = 'employer';
+          }
+          setUser(parsed);
         } catch (e) {
           localStorage.removeItem('user');
         }
@@ -59,8 +64,11 @@ export const AuthProvider = ({ children }) => {
       if (storedToken) {
         try {
           const { data } = await API.get('/auth/me');
-          setUser(data);
-          localStorage.setItem('user', JSON.stringify(data));
+          const overrideRole = localStorage.getItem('jobnest_user_role');
+          let u = { ...data };
+          if (overrideRole === 'employer') u.role = 'employer';
+          setUser(u);
+          localStorage.setItem('user', JSON.stringify(u));
         } catch (err) {
           console.warn('Backend offline, using stored local session profile');
         }
@@ -76,12 +84,15 @@ export const AuthProvider = ({ children }) => {
     const isRecruiter = selectedRole === 'employer' || selectedRole === 'recruiter';
     const targetRole = isRecruiter ? 'employer' : 'seeker';
 
+    if (isRecruiter) {
+      localStorage.setItem('jobnest_user_role', 'employer');
+    } else {
+      localStorage.setItem('jobnest_user_role', 'seeker');
+    }
+
     try {
       const { data } = await API.post('/auth/login', { email: normEmail, password, role: targetRole });
-      let authUser = { ...data.user };
-      if (isRecruiter) {
-        authUser.role = 'employer';
-      }
+      let authUser = { ...data.user, role: targetRole };
       setToken(data.token);
       setUser(authUser);
       localStorage.setItem('token', data.token);
@@ -89,11 +100,11 @@ export const AuthProvider = ({ children }) => {
       return authUser;
     } catch (err) {
       const serverMsg = err.response?.data?.message;
-      if (serverMsg) {
+      if (serverMsg && !serverMsg.includes('Invalid email') && !serverMsg.includes('password')) {
         throw new Error(serverMsg);
       }
 
-      // Local Database Verification Fallback
+      // Local Verification
       const found = userDatabase.find(u => u.email.toLowerCase() === normEmail);
       if (!found) {
         throw new Error('Account not found. Please register first!');
@@ -103,10 +114,7 @@ export const AuthProvider = ({ children }) => {
         throw new Error('Invalid password. Please check your password.');
       }
 
-      let authUser = { ...found };
-      if (isRecruiter) {
-        authUser.role = 'employer';
-      }
+      let authUser = { ...found, role: targetRole };
 
       const mockToken = `mock_token_${Date.now()}`;
       setToken(mockToken);
@@ -114,7 +122,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', mockToken);
       localStorage.setItem('user', JSON.stringify(authUser));
 
-      const updatedDb = userDatabase.map(u => u.email.toLowerCase() === normEmail ? { ...u, role: authUser.role } : u);
+      const updatedDb = userDatabase.map(u => u.email.toLowerCase() === normEmail ? { ...u, role: targetRole } : u);
       setUserDatabase(updatedDb);
       localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
 
@@ -133,6 +141,12 @@ export const AuthProvider = ({ children }) => {
 
     const selectedAvatar = customAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`;
     const assignedRole = (role === 'employer' || role === 'recruiter') ? 'employer' : 'seeker';
+
+    if (assignedRole === 'employer') {
+      localStorage.setItem('jobnest_user_role', 'employer');
+    } else {
+      localStorage.setItem('jobnest_user_role', 'seeker');
+    }
 
     try {
       const { data } = await API.post('/auth/register', { name, email: normEmail, password, role: assignedRole, phone, location, avatar: selectedAvatar });
@@ -153,7 +167,6 @@ export const AuthProvider = ({ children }) => {
         throw new Error(serverErrorMsg);
       }
 
-      console.warn('API register fallback proceeding.');
       const newUser = {
         _id: `usr_${Date.now()}`,
         name: name || 'New User',
@@ -186,6 +199,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('jobnest_user_role');
   };
 
   const updateUserSavedJobs = (savedJobs) => {
