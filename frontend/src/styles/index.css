@@ -6,6 +6,9 @@
   --emerald: #059669;
   --emerald-light: #ecfdf5;
   --amber: #d97706;
+  --amber-light: #fffbeb;
+  --rose: #e11d48;
+  --rose-light: #fff1f2;
   --slate-bg: #f8fafc;
   --card-bg: #ffffff;
   --text-main: #0f172a;
@@ -307,6 +310,16 @@ h1, h2, h3, h4, h5, h6 {
 .badge-emerald {
   background: var(--emerald-light);
   color: var(--emerald);
+}
+
+.badge-amber {
+  background: var(--amber-light);
+  color: var(--amber);
+}
+
+.badge-rose {
+  background: var(--rose-light);
+  color: var(--rose);
 }
 
 /* Footer */

@@ -16,11 +16,31 @@ export const SeekerDashboard = () => {
 
   useEffect(() => {
     const fetchApplications = async () => {
+      let localApps = [];
+      try {
+        const stored = localStorage.getItem('jobnest_user_applications');
+        if (stored) {
+          localApps = JSON.parse(stored);
+        }
+      } catch (e) {}
+
       try {
         const { data } = await API.get('/applications/my');
-        setApplications(data);
+        if (data && Array.isArray(data) && data.length > 0) {
+          // Combine API and local storage applications, avoiding duplicate IDs
+          const combined = [...data];
+          localApps.forEach(la => {
+            if (!combined.some(c => c._id === la._id)) {
+              combined.push(la);
+            }
+          });
+          setApplications(combined);
+        } else {
+          setApplications(localApps);
+        }
       } catch (err) {
-        console.error('Error fetching applications:', err);
+        console.warn('API applications endpoint offline, using local application store:', err.message);
+        setApplications(localApps);
       } finally {
         setLoading(false);
       }
@@ -44,7 +64,7 @@ export const SeekerDashboard = () => {
   };
 
   return (
-    <div className="container" style={{ paddingTop: '2.5rem' }}>
+    <div className="container" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ fontSize: '2rem' }}>Applicant <span className="gradient-text">Dashboard</span></h1>
         <p style={{ color: 'var(--text-muted)' }}>Track your submitted shift applications & saved opportunities</p>
@@ -93,37 +113,37 @@ export const SeekerDashboard = () => {
             <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Explore nearby shifts and submit your first application!</p>
           </div>
         ) : (
-          <div className="table-responsive card-glass" style={{ padding: 0 }}>
-            <table className="custom-table">
+          <div className="table-responsive card-glass" style={{ padding: 0, overflowX: 'auto' }}>
+            <table className="custom-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
-                <tr>
-                  <th>Position & Category</th>
-                  <th>Company & Location</th>
-                  <th>Hourly Pay</th>
-                  <th>Applied Date</th>
-                  <th>Status</th>
+                <tr style={{ background: 'var(--slate-bg)', borderBottom: '1px solid var(--border-subtle)', textAlign: 'left' }}>
+                  <th style={{ padding: '1rem' }}>Position & Category</th>
+                  <th style={{ padding: '1rem' }}>Company & Location</th>
+                  <th style={{ padding: '1rem' }}>Hourly Pay</th>
+                  <th style={{ padding: '1rem' }}>Applied Date</th>
+                  <th style={{ padding: '1rem' }}>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {applications.map(app => (
-                  <tr key={app._id}>
-                    <td>
-                      <div style={{ fontWeight: 700 }}>{app.job?.title || 'Part-Time Shift'}</div>
-                      <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>{app.job?.category}</div>
+                  <tr key={app._id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                    <td style={{ padding: '1rem' }}>
+                      <div style={{ fontWeight: 700, fontSize: '0.98rem' }}>{app.job?.title || 'Part-Time Shift'}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 500 }}>{app.job?.category}</div>
                     </td>
-                    <td>
-                      <div>{app.job?.company || 'Local Store'}</div>
+                    <td style={{ padding: '1rem' }}>
+                      <div style={{ fontWeight: 600 }}>{app.job?.company || 'Local Store'}</div>
                       <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
-                        <MapPin size={12} /> {app.job?.locationName || 'Nearby'}
+                        <MapPin size={12} /> {app.job?.locationName || 'Kottayam Town'}
                       </div>
                     </td>
-                    <td>
-                      <span style={{ fontWeight: 700, color: 'var(--emerald)' }}>₹{app.job?.hourlyRate || '250'}/hr</span>
+                    <td style={{ padding: '1rem' }}>
+                      <span style={{ fontWeight: 800, color: 'var(--emerald)' }}>₹{app.job?.hourlyRate || '250'}/hr</span>
                     </td>
-                    <td style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                      {new Date(app.createdAt).toLocaleDateString()}
+                    <td style={{ padding: '1rem', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                      {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'Just Now'}
                     </td>
-                    <td>{getStatusBadge(app.status)}</td>
+                    <td style={{ padding: '1rem' }}>{getStatusBadge(app.status)}</td>
                   </tr>
                 ))}
               </tbody>

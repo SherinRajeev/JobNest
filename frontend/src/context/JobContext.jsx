@@ -4,10 +4,9 @@ import { AuthContext } from './AuthContext';
 
 export const JobContext = createContext();
 
-// Geodesic Haversine Distance Calculation Helper (in Kilometers)
 export const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
   if (!lat1 || !lon1 || !lat2 || !lon2) return 0.5;
-  const R = 6371; // Earth's radius in km
+  const R = 6371;
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
   const a =
@@ -21,7 +20,6 @@ export const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
   return parseFloat(dist.toFixed(1));
 };
 
-// Known Coordinates Lookup Map for Kerala Locations
 export const cityCoordinatesMap = {
   'kottayam': { lat: 9.5916, lng: 76.5222, name: 'Kottayam Town' },
   'kanjikuzhy': { lat: 9.5916, lng: 76.5330, name: 'Kanjikuzhy, Kottayam' },
@@ -38,7 +36,6 @@ export const cityCoordinatesMap = {
   'kozhikode': { lat: 11.2588, lng: 75.7804, name: 'Kozhikode' }
 };
 
-// 16 Authentic Kerala Part-Time Shifts with Precise Geocoded Coordinates
 const defaultKeralaJobs = [
   {
     _id: 'job_1',
@@ -301,8 +298,6 @@ const defaultKeralaJobs = [
 export const JobProvider = ({ children }) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  
-  // Permanent Reference Point: Kottayam Town Center (9.5916, 76.5222)
   const [userCoords, setUserCoords] = useState({ lat: 9.5916, lng: 76.5222 });
   const [detectedCity, setDetectedCity] = useState('Kottayam Town');
 
@@ -316,7 +311,6 @@ export const JobProvider = ({ children }) => {
 
   const { user, updateUserSavedJobs } = useContext(AuthContext);
 
-  // Set city location explicitly
   const setCityLocation = (cityName) => {
     const key = cityName.toLowerCase();
     for (const [mapKey, cityInfo] of Object.entries(cityCoordinatesMap)) {
@@ -330,7 +324,6 @@ export const JobProvider = ({ children }) => {
     setDetectedCity('Kottayam Town');
   };
 
-  // Sync user location profile
   useEffect(() => {
     if (user?.location) {
       setCityLocation(user.location);
@@ -371,7 +364,6 @@ export const JobProvider = ({ children }) => {
       rawList = defaultKeralaJobs;
     }
 
-    // Client-Side Filter & Precise Geodesic Distance Calculation
     let filtered = rawList;
 
     if (customFilters.search) {
@@ -438,11 +430,36 @@ export const JobProvider = ({ children }) => {
   };
 
   const applyJob = async (jobId, coverNote, availability, phone) => {
+    const targetJob = jobs.find(j => j._id === jobId) || defaultKeralaJobs.find(j => j._id === jobId) || {
+      _id: jobId,
+      title: 'Part-Time Shift Opportunity',
+      company: 'Kerala Business Network',
+      category: 'Shift',
+      hourlyRate: 250,
+      locationName: 'Kottayam Town'
+    };
+
+    const newApp = {
+      _id: `app_${Date.now()}`,
+      job: targetJob,
+      jobId,
+      coverNote,
+      availability,
+      phone,
+      status: 'Applied',
+      createdAt: new Date().toISOString()
+    };
+
+    // Save to localStorage for instant client persistence
+    const existingApps = JSON.parse(localStorage.getItem('jobnest_user_applications') || '[]');
+    const updatedApps = [newApp, ...existingApps];
+    localStorage.setItem('jobnest_user_applications', JSON.stringify(updatedApps));
+
     try {
       const { data } = await API.post('/applications', { jobId, coverNote, availability, phone });
       return data;
     } catch (err) {
-      return { _id: `app_${Date.now()}`, jobId, coverNote, availability, phone, status: 'Applied' };
+      return newApp;
     }
   };
 
