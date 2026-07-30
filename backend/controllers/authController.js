@@ -11,7 +11,7 @@ export const registerUser = async (req, res) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const assignedRole = role === 'employer' || role === 'recruiter' ? 'employer' : 'seeker';
+    const assignedRole = (role && (role.toLowerCase() === 'employer' || role.toLowerCase() === 'recruiter')) ? 'employer' : 'seeker';
 
     if (req.dbConnected) {
       const existingUser = await User.findOne({ email: normalizedEmail });
@@ -82,13 +82,19 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
     const normalizedEmail = email.toLowerCase().trim();
+    const targetRole = (role && (role.toLowerCase() === 'employer' || role.toLowerCase() === 'recruiter')) ? 'employer' : null;
 
     if (req.dbConnected) {
       const user = await User.findOne({ email: normalizedEmail });
 
       if (user && (await user.matchPassword(password))) {
+        if (targetRole && user.role !== targetRole) {
+          user.role = targetRole;
+          await user.save();
+        }
+
         return res.json({
           user: {
             _id: user._id,
@@ -106,8 +112,11 @@ export const loginUser = async (req, res) => {
 
       return res.status(401).json({ message: 'Invalid email or password' });
     } else {
-      const user = memoryStore.users.find(u => u.email.toLowerCase() === normalizedEmail);
+      let user = memoryStore.users.find(u => u.email.toLowerCase() === normalizedEmail);
       if (user) {
+        if (targetRole) {
+          user.role = targetRole;
+        }
         return res.json({
           user,
           token: `mock_token_${Date.now()}`

@@ -41,11 +41,6 @@ export const AuthProvider = ({ children }) => {
     ];
   });
 
-  const [registeredEmails, setRegisteredEmails] = useState(() => {
-    const stored = localStorage.getItem('jobnest_registered_emails');
-    return stored ? JSON.parse(stored) : ['seeker@jobnest.com', 'employer@jobnest.com'];
-  });
-
   useEffect(() => {
     const loadUser = async () => {
       const storedToken = localStorage.getItem('token');
@@ -76,18 +71,25 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password, selectedRole) => {
     const normEmail = email.toLowerCase().trim();
-    const targetRole = selectedRole === 'employer' || selectedRole === 'recruiter' ? 'employer' : 'seeker';
+    const isRecruiter = selectedRole === 'employer' || selectedRole === 'recruiter';
+    const targetRole = isRecruiter ? 'employer' : 'seeker';
 
     try {
       const { data } = await API.post('/auth/login', { email: normEmail, password, role: targetRole });
-      let authUser = data.user;
-      if (selectedRole === 'employer' && authUser.role !== 'employer') {
+      let authUser = { ...data.user };
+      if (isRecruiter) {
         authUser.role = 'employer';
       }
       setToken(data.token);
       setUser(authUser);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(authUser));
+
+      // Sync local user database
+      const updatedDb = userDatabase.map(u => u.email.toLowerCase() === normEmail ? { ...u, role: authUser.role } : u);
+      setUserDatabase(updatedDb);
+      localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
+
       return authUser;
     } catch (err) {
       console.warn('API login fallback proceeding.');
@@ -108,7 +110,7 @@ export const AuthProvider = ({ children }) => {
           avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(seedName)}`,
           savedJobs: []
         };
-      } else if (selectedRole === 'employer') {
+      } else if (isRecruiter) {
         authUser.role = 'employer';
       }
 
@@ -131,20 +133,21 @@ export const AuthProvider = ({ children }) => {
     }
 
     const selectedAvatar = customAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`;
-    const assignedRole = role === 'employer' || role === 'recruiter' ? 'employer' : 'seeker';
+    const assignedRole = (role === 'employer' || role === 'recruiter') ? 'employer' : 'seeker';
 
     try {
       const { data } = await API.post('/auth/register', { name, email: normEmail, password, role: assignedRole, phone, location, avatar: selectedAvatar });
+      let authUser = { ...data.user, role: assignedRole };
       setToken(data.token);
-      setUser(data.user);
+      setUser(authUser);
       localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('user', JSON.stringify(authUser));
 
-      const updatedDb = [data.user, ...userDatabase];
+      const updatedDb = [authUser, ...userDatabase];
       setUserDatabase(updatedDb);
       localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
 
-      return data.user;
+      return authUser;
     } catch (err) {
       const serverErrorMsg = err.response?.data?.message;
       if (serverErrorMsg && serverErrorMsg.includes('already exists')) {

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Compass, PlusCircle, LayoutDashboard, Search, User } from 'lucide-react';
+import { Compass, PlusCircle, LayoutDashboard, Search, ShieldCheck, User as UserIcon } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { ProfileModal } from './ProfileModal';
 
@@ -9,7 +9,7 @@ export const Navbar = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
 
   const defaultAvatar = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.name || 'User')}`;
-  const isRecruiter = user && ['employer', 'recruiter', 'admin'].includes(user.role?.toLowerCase());
+  const isRecruiter = user && (user.role?.toLowerCase() === 'employer' || user.role?.toLowerCase() === 'recruiter' || user.role?.toLowerCase() === 'admin');
 
   return (
     <>
@@ -63,7 +63,7 @@ export const Navbar = () => {
                   </Link>
                 )}
 
-                {/* Interactive Profile Capsule -> Click Opens Profile Settings & Sign Out */}
+                {/* Interactive Profile Capsule */}
                 <div
                   onClick={() => setShowProfileModal(true)}
                   title="Click to view & edit Profile / Sign Out"
@@ -89,8 +89,8 @@ export const Navbar = () => {
                     }}
                     style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', background: '#eff6ff', border: '1px solid var(--border-subtle)' }}
                   />
-                  <span style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-main)' }}>
-                    {isRecruiter ? 'Recruiter' : 'Applicant'}
+                  <span style={{ fontSize: '0.88rem', fontWeight: 700, color: isRecruiter ? 'var(--primary)' : 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    {isRecruiter ? <><ShieldCheck size={14} color="var(--primary)" /> Recruiter</> : <><UserIcon size={14} /> Applicant</>}
                   </span>
                 </div>
               </>
