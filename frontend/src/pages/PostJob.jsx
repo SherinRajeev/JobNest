@@ -52,7 +52,7 @@ export const PostJob = () => {
 
   return (
     <div className="container" style={{ paddingTop: '2.5rem', paddingBottom: '4rem', maxWidth: '780px' }}>
-      <div className="card-glass" style={{ padding: '2.5rem', borderRadius: '24px' }}>
+      <div className="card-glass" style={{ padding: '2rem', borderRadius: '24px' }}>
         <div style={{ marginBottom: '1.75rem', textAlign: 'center' }}>
           <h1 style={{ fontSize: '2rem', marginBottom: '0.35rem' }}>Post a <span className="gradient-text">Shift Opening</span></h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
@@ -64,38 +64,34 @@ export const PostJob = () => {
 
         <form onSubmit={handleSubmit}>
           {/* Section 1: Basic Shift Info */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+          <div className="responsive-form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
             <div className="form-group">
               <label className="form-label">Shift Position Title *</label>
-              <div style={{ position: 'relative' }}>
-                <input
-                  type="text"
-                  placeholder="e.g. Weekend Coffee Barista & Billing Staff"
-                  value={formData.title}
-                  onChange={e => setFormData({ ...formData, title: e.target.value })}
-                  className="form-control"
-                  required
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="e.g. Weekend Coffee Barista & Billing Staff"
+                value={formData.title}
+                onChange={e => setFormData({ ...formData, title: e.target.value })}
+                className="form-control"
+                required
+              />
             </div>
 
             <div className="form-group">
               <label className="form-label">Store / Company Name *</label>
-              <div style={{ position: 'relative' }}>
-                <input
-                  type="text"
-                  placeholder="e.g. Indian Coffee House / Pothys Silks"
-                  value={formData.company}
-                  onChange={e => setFormData({ ...formData, company: e.target.value })}
-                  className="form-control"
-                  required
-                />
-              </div>
+              <input
+                type="text"
+                placeholder="e.g. Indian Coffee House / Pothys Silks"
+                value={formData.company}
+                onChange={e => setFormData({ ...formData, company: e.target.value })}
+                className="form-control"
+                required
+              />
             </div>
           </div>
 
           {/* Section 2: Category, Pay & Timing */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.25rem' }}>
+          <div className="responsive-form-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1.25rem' }}>
             <div className="form-group">
               <label className="form-label">Category *</label>
               <select
@@ -189,7 +185,7 @@ export const PostJob = () => {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginTop: '2rem' }}>
+          <div className="responsive-form-grid-2" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem', marginTop: '2rem' }}>
             <button type="submit" className="btn btn-primary btn-full" style={{ padding: '0.8rem' }} disabled={loading}>
               {loading ? 'Publishing Shift...' : <>Publish Shift Opening <PlusCircle size={18} /></>}
             </button>

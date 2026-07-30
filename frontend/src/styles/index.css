@@ -33,7 +33,10 @@
   padding: 0;
 }
 
-body {
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   font-family: var(--font-body);
   background-color: var(--slate-bg);
   color: var(--text-main);
@@ -48,6 +51,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .container {
+  width: 100%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
@@ -81,6 +85,7 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.2s ease;
   border: none;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .btn-primary {
@@ -216,6 +221,14 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--border-subtle);
 }
 
+/* Main Jobs Container Responsive Grid */
+.jobs-main-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 280px) 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
 /* Single Job Card per Row Stacked Layout */
 .jobs-grid {
   display: flex;
@@ -300,6 +313,7 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 20px;
   font-size: 0.78rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .badge-primary {
@@ -330,17 +344,85 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 5rem;
 }
 
-/* Responsive Media Queries */
-@media (max-width: 900px) {
-  .hero-title {
-    font-size: 2.2rem;
+/* ==========================================================================
+   Comprehensive Mobile & Tablet Responsive Media Queries
+   ========================================================================== */
+
+/* Tablet & Smaller Screens (< 960px) */
+@media (max-width: 960px) {
+  .jobs-main-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
+
+  .hero-title {
+    font-size: 2.3rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+
   .search-bar-hero {
     flex-direction: column;
     padding: 1rem;
     border-radius: var(--radius-md);
   }
+
   .search-divider {
     display: none;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+}
+
+/* Mobile Screens (< 680px) */
+@media (max-width: 680px) {
+  .hero-title {
+    font-size: 1.85rem;
+  }
+
+  .navbar .container {
+    gap: 0.5rem;
+  }
+
+  .nav-actions {
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+  }
+
+  .responsive-form-grid-2,
+  .responsive-form-grid-3 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .modal-overlay {
+    padding: 0.75rem;
+  }
+
+  .modal-content {
+    max-height: 94vh;
+    padding: 1.25rem !important;
+    border-radius: 18px;
+  }
+
+  .btn {
+    padding: 0.55rem 1rem;
+    font-size: 0.88rem;
+  }
+}
+
+/* Ultra Small Mobile Screens (< 420px) */
+@media (max-width: 420px) {
+  .hero-title {
+    font-size: 1.6rem;
+  }
+
+  .btn-sm {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.8rem;
   }
 }

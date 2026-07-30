@@ -9,12 +9,12 @@ import { MapView } from '../components/MapView';
 export const Jobs = () => {
   const { jobs, loading, filters, setFilters, fetchJobs } = useContext(JobContext);
   const [selectedJob, setSelectedJob] = useState(null);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'map'
+  const [viewMode, setViewMode] = useState('grid');
 
   return (
     <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
       {/* Header & View Switcher */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>Browse Nearby <span className="gradient-text">Part-Time Jobs</span></h1>
           <p style={{ color: 'var(--text-muted)' }}>
@@ -40,8 +40,8 @@ export const Jobs = () => {
         </div>
       </div>
 
-      {/* Main Layout Grid: Sidebar 280px + Content 1fr */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(260px, 280px) 1fr', gap: '2rem', alignItems: 'start' }}>
+      {/* Main Responsive Layout: Sidebar 280px + Content 1fr (1fr on Mobile) */}
+      <div className="jobs-main-layout">
         {/* Left Filter Sidebar */}
         <div>
           <FilterSidebar />
@@ -50,8 +50,8 @@ export const Jobs = () => {
         {/* Right Job Content Area */}
         <div>
           {/* Quick Search Bar */}
-          <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.75rem' }}>
-            <div style={{ position: 'relative', flex: 1 }}>
+          <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
               <input
                 type="text"
                 className="form-control"
@@ -73,7 +73,7 @@ export const Jobs = () => {
               Loading nearby shift opportunities...
             </div>
           ) : jobs.length === 0 ? (
-            <div className="card-glass" style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+            <div className="card-glass" style={{ textAlign: 'center', padding: '3.5rem 1.5rem' }}>
               <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>No shifts match your search criteria</h3>
               <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Try broadening your search radius slider or changing category filters.</p>
               <button
@@ -91,7 +91,7 @@ export const Jobs = () => {
             <MapView jobs={jobs} onSelectJob={j => setSelectedJob(j)} />
           ) : (
             /* 1 Job Card per Row Stacked Layout */
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div className="jobs-grid">
               {jobs.map(job => (
                 <JobCard key={job._id} job={job} onViewDetails={j => setSelectedJob(j)} />
               ))}
