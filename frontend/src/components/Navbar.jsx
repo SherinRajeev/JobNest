@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Compass, PlusCircle, LayoutDashboard, Search, ShieldCheck, User as UserIcon } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import { ProfileModal } from './ProfileModal';
@@ -13,8 +13,8 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar">
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap' }}>
+      <nav className="navbar" style={{ padding: '0.75rem 0' }}>
+        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           {/* Brand Logo */}
           <Link to="/" className="navbar-brand" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none' }}>
             <div style={{
@@ -45,16 +45,16 @@ export const Navbar = () => {
           </div>
 
           {/* Auth & Navigation Actions */}
-          <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
             {user ? (
               <>
                 {isRecruiter ? (
                   <>
-                    <Link to="/post-job" className="btn btn-primary btn-sm">
-                      <PlusCircle size={16} /> Post Shift
+                    <Link to="/post-job" className="btn btn-primary btn-sm" style={{ padding: '0.45rem 0.85rem' }}>
+                      <PlusCircle size={15} /> Post Shift
                     </Link>
-                    <Link to="/employer-dashboard" className="btn btn-secondary btn-sm">
-                      <LayoutDashboard size={16} /> Recruiter Portal
+                    <Link to="/employer-dashboard" className="btn btn-secondary btn-sm" style={{ padding: '0.45rem 0.85rem' }}>
+                      <LayoutDashboard size={15} /> Recruiter Portal
                     </Link>
                   </>
                 ) : (
@@ -70,14 +70,15 @@ export const Navbar = () => {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '0.6rem',
-                    padding: '0.35rem 0.85rem',
+                    gap: '0.5rem',
+                    padding: '0.35rem 0.75rem',
                     background: 'var(--bg-glass)',
                     border: '1px solid var(--border-subtle)',
                     borderRadius: '30px',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
-                    boxShadow: 'var(--shadow-sm)'
+                    boxShadow: 'var(--shadow-sm)',
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   <img
@@ -87,9 +88,9 @@ export const Navbar = () => {
                       e.target.onerror = null;
                       e.target.src = defaultAvatar;
                     }}
-                    style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover', background: '#eff6ff', border: '1px solid var(--border-subtle)' }}
+                    style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover', background: '#eff6ff', border: '1px solid var(--border-subtle)' }}
                   />
-                  <span style={{ fontSize: '0.88rem', fontWeight: 700, color: isRecruiter ? 'var(--primary)' : 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: isRecruiter ? 'var(--primary)' : 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '3px' }}>
                     {isRecruiter ? <><ShieldCheck size={14} color="var(--primary)" /> Recruiter</> : <><UserIcon size={14} /> Applicant</>}
                   </span>
                 </div>
