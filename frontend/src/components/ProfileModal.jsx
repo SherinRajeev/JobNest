@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { X, User, Mail, Phone, MapPin, Save, LogOut, Sparkles, Edit3, ShieldCheck, Upload, Image as ImageIcon } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import API from '../services/api';
@@ -7,14 +7,26 @@ export const ProfileModal = ({ onClose }) => {
   const { user, setUser, logout } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [name, setName] = useState(user?.name || '');
-  const [email, setEmail] = useState(user?.email || '');
-  const [phone, setPhone] = useState(user?.phone || '');
-  const [location, setLocation] = useState(user?.location || '');
-  const [bio, setBio] = useState(user?.bio || '');
-  const [avatar, setAvatar] = useState(user?.avatar || '');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [location, setLocation] = useState('');
+  const [bio, setBio] = useState('');
+  const [avatar, setAvatar] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState(null);
+
+  // Sync profile modal state whenever user context updates
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setEmail(user.email || '');
+      setPhone(user.phone || '');
+      setLocation(user.location || 'Kottayam Town, Kerala');
+      setBio(user.bio || '');
+      setAvatar(user.avatar || '');
+    }
+  }, [user]);
 
   const isRecruiter = user && ['employer', 'recruiter', 'admin'].includes(user.role?.toLowerCase());
 
@@ -69,6 +81,8 @@ export const ProfileModal = ({ onClose }) => {
     setIsEditing(false);
   };
 
+  const defaultAvatarSeed = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(user?.name || name || 'User')}`;
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '490px', padding: '2.25rem' }}>
@@ -81,8 +95,12 @@ export const ProfileModal = ({ onClose }) => {
         <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div style={{ position: 'relative', width: '88px', height: '88px', margin: '0 auto 0.75rem' }}>
             <img
-              src={avatar || user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`}
-              alt={name}
+              src={avatar || user?.avatar || defaultAvatarSeed}
+              alt={user?.name || name || 'User'}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = defaultAvatarSeed;
+              }}
               style={{ width: '88px', height: '88px', borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--primary)', background: '#eff6ff', boxShadow: 'var(--shadow-sm)' }}
             />
             {isEditing && (
@@ -102,7 +120,9 @@ export const ProfileModal = ({ onClose }) => {
               style={{ display: 'none' }}
             />
           </div>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.25rem' }}>{user?.name || 'User Name'}</h2>
+          <h2 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '0.25rem' }}>
+            {user?.name || name || 'Signed-In User'}
+          </h2>
           <span className="badge badge-primary" style={{ fontSize: '0.8rem', padding: '0.35rem 0.85rem' }}>
             {isRecruiter ? <><ShieldCheck size={14} /> Recruiter Account</> : <><User size={14} /> Applicant Account</>}
           </span>
@@ -118,7 +138,7 @@ export const ProfileModal = ({ onClose }) => {
                 <Mail size={18} color="var(--primary)" />
                 <div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>EMAIL ADDRESS</div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>{user?.email || 'Not set'}</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>{user?.email || email || 'Not set'}</div>
                 </div>
               </div>
 
@@ -126,7 +146,7 @@ export const ProfileModal = ({ onClose }) => {
                 <Phone size={18} color="var(--emerald)" />
                 <div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>PHONE NUMBER</div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>{user?.phone || 'Not set'}</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>{user?.phone || phone || 'Not set'}</div>
                 </div>
               </div>
 
@@ -134,14 +154,14 @@ export const ProfileModal = ({ onClose }) => {
                 <MapPin size={18} color="#0284c7" />
                 <div>
                   <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>LOCATION / AREA</div>
-                  <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>{user?.location || 'Kottayam Town, Kerala'}</div>
+                  <div style={{ fontSize: '0.95rem', fontWeight: 600 }}>{user?.location || location || 'Kottayam Town, Kerala'}</div>
                 </div>
               </div>
             </div>
 
-            {user?.bio && (
+            {(user?.bio || bio) && (
               <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontStyle: 'italic', padding: '0.5rem', textAlign: 'center' }}>
-                "{user.bio}"
+                "{user?.bio || bio}"
               </div>
             )}
 
