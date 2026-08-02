@@ -81,18 +81,19 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password, selectedRole) => {
     const normEmail = email.toLowerCase().trim();
-    const isRecruiter = selectedRole === 'employer' || selectedRole === 'recruiter';
-    const targetRole = isRecruiter ? 'employer' : 'seeker';
-
-    if (isRecruiter) {
-      localStorage.setItem('jobnest_user_role', 'employer');
-    } else {
-      localStorage.setItem('jobnest_user_role', 'seeker');
-    }
+    const cleanPassword = (password || '').trim();
 
     try {
-      const { data } = await API.post('/auth/login', { email: normEmail, password, role: targetRole });
-      let authUser = { ...data.user, role: targetRole };
+      const { data } = await API.post('/auth/login', { email: normEmail, password: cleanPassword, role: selectedRole });
+      let authUser = { ...data.user };
+      if (authUser.role === 'employer' || authUser.role === 'recruiter') {
+        localStorage.setItem('jobnest_user_role', 'employer');
+        authUser.role = 'employer';
+      } else {
+        localStorage.setItem('jobnest_user_role', 'seeker');
+        authUser.role = 'seeker';
+      }
+
       setToken(data.token);
       setUser(authUser);
       localStorage.setItem('token', data.token);
@@ -100,21 +101,31 @@ export const AuthProvider = ({ children }) => {
       return authUser;
     } catch (err) {
       const serverMsg = err.response?.data?.message;
-      if (serverMsg && !serverMsg.includes('Invalid email') && !serverMsg.includes('password')) {
+
+      // Check local database for account match
+      const found = userDatabase.find(u => u.email.toLowerCase() === normEmail);
+
+      if (!found && serverMsg) {
         throw new Error(serverMsg);
       }
 
-      // Local Verification
-      const found = userDatabase.find(u => u.email.toLowerCase() === normEmail);
       if (!found) {
-        throw new Error('Account not found. Please register first!');
+        throw new Error('Account not found with this email. Please register first!');
       }
 
-      if (found.password && found.password !== password) {
-        throw new Error('Invalid password. Please check your password.');
+      // Check password match
+      if (found.password && found.password !== cleanPassword) {
+        throw new Error('Incorrect password. Please verify your password.');
       }
 
-      let authUser = { ...found, role: targetRole };
+      const assignedRole = (found.role === 'employer' || found.role === 'recruiter' || selectedRole === 'employer') ? 'employer' : 'seeker';
+      let authUser = { ...found, role: assignedRole };
+
+      if (assignedRole === 'employer') {
+        localStorage.setItem('jobnest_user_role', 'employer');
+      } else {
+        localStorage.setItem('jobnest_user_role', 'seeker');
+      }
 
       const mockToken = `mock_token_${Date.now()}`;
       setToken(mockToken);
@@ -122,21 +133,18 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('token', mockToken);
       localStorage.setItem('user', JSON.stringify(authUser));
 
-      const updatedDb = userDatabase.map(u => u.email.toLowerCase() === normEmail ? { ...u, role: targetRole } : u);
-      setUserDatabase(updatedDb);
-      localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
-
       return authUser;
     }
   };
 
   const register = async (name, email, password, role, phone, location, customAvatar) => {
     const normEmail = email.toLowerCase().trim();
+    const cleanPassword = (password || '').trim();
 
     const existing = userDatabase.find(u => u.email.toLowerCase() === normEmail);
     if (existing) {
       const existingRoleTitle = existing.role === 'employer' ? 'Recruiter' : 'Applicant';
-      throw new Error(`This account already exists as a ${existingRoleTitle}! Go and sign in.`);
+      throw new Error(`This email is already registered as a ${existingRoleTitle}! Go to Sign In.`);
     }
 
     const selectedAvatar = customAvatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name || 'User')}`;
@@ -149,21 +157,21 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const { data } = await API.post('/auth/register', { name, email: normEmail, password, role: assignedRole, phone, location, avatar: selectedAvatar });
+      const { data } = await API.post('/auth/register', { name, email: normEmail, password: cleanPassword, role: assignedRole, phone, location, avatar: selectedAvatar });
       let authUser = { ...data.user, role: assignedRole };
       setToken(data.token);
       setUser(authUser);
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(authUser));
 
-      const updatedDb = [{ ...authUser, password }, ...userDatabase];
+      const updatedDb = [{ ...authUser, password: cleanPassword }, ...userDatabase];
       setUserDatabase(updatedDb);
       localStorage.setItem('jobnest_users_db', JSON.stringify(updatedDb));
 
       return authUser;
     } catch (err) {
       const serverErrorMsg = err.response?.data?.message;
-      if (serverErrorMsg && serverErrorMsg.includes('already exists')) {
+      if (serverErrorMsg && serverErrorMsg.includes('already registered')) {
         throw new Error(serverErrorMsg);
       }
 
@@ -171,7 +179,7 @@ export const AuthProvider = ({ children }) => {
         _id: `usr_${Date.now()}`,
         name: name || 'New User',
         email: normEmail,
-        password,
+        password: cleanPassword,
         role: assignedRole,
         phone: phone || '+91 98765 43210',
         location: location || 'Kottayam Town, Kerala',

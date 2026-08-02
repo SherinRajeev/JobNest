@@ -19,15 +19,10 @@ export const Login = () => {
     setLoading(true);
     setError(null);
     try {
-      if (role === 'employer') {
-        localStorage.setItem('jobnest_user_role', 'employer');
-      } else {
-        localStorage.setItem('jobnest_user_role', 'seeker');
-      }
-
       const u = await login(email, password, role);
+      const isRecruiterUser = u?.role === 'employer' || u?.role === 'recruiter';
 
-      if (role === 'employer' || u?.role === 'employer' || u?.role === 'recruiter') {
+      if (isRecruiterUser) {
         navigate('/employer-dashboard', { replace: true });
       } else {
         navigate('/jobs', { replace: true });

@@ -19,7 +19,7 @@ export const registerUser = async (req, res) => {
       if (existingUser) {
         const existingRoleTitle = existingUser.role === 'employer' ? 'Recruiter' : 'Applicant';
         return res.status(400).json({
-          message: `This account already exists as a ${existingRoleTitle}! Go and sign in.`
+          message: `This email is already registered as a ${existingRoleTitle}! Please go to Sign In.`
         });
       }
 
@@ -52,7 +52,7 @@ export const registerUser = async (req, res) => {
       if (existingInMemory) {
         const existingRoleTitle = existingInMemory.role === 'employer' ? 'Recruiter' : 'Applicant';
         return res.status(400).json({
-          message: `This account already exists as a ${existingRoleTitle}! Go and sign in.`
+          message: `This email is already registered as a ${existingRoleTitle}! Please go to Sign In.`
         });
       }
 
@@ -88,23 +88,18 @@ export const loginUser = async (req, res) => {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const targetRole = (role && (role.toLowerCase() === 'employer' || role.toLowerCase() === 'recruiter')) ? 'employer' : null;
+    const cleanPassword = password.trim();
 
     if (req.dbConnected) {
       const user = await User.findOne({ email: normalizedEmail });
 
       if (!user) {
-        return res.status(404).json({ message: 'Account not found. Please register first!' });
+        return res.status(404).json({ message: 'Account not found. Please create an account first.' });
       }
 
-      const isMatch = await user.matchPassword(password);
+      const isMatch = await user.matchPassword(cleanPassword);
       if (!isMatch) {
-        return res.status(401).json({ message: 'Invalid password. Please check your password.' });
-      }
-
-      if (targetRole && user.role !== targetRole) {
-        user.role = targetRole;
-        await user.save();
+        return res.status(401).json({ message: 'Incorrect password. Please verify your password.' });
       }
 
       return res.json({
@@ -123,15 +118,11 @@ export const loginUser = async (req, res) => {
     } else {
       let user = memoryStore.users.find(u => u.email.toLowerCase() === normalizedEmail);
       if (!user) {
-        return res.status(404).json({ message: 'Account not found. Please register first!' });
+        return res.status(404).json({ message: 'Account not found. Please create an account first.' });
       }
 
-      if (user.password && user.password !== password) {
-        return res.status(401).json({ message: 'Invalid password. Please check your password.' });
-      }
-
-      if (targetRole) {
-        user.role = targetRole;
+      if (user.password && user.password !== cleanPassword) {
+        return res.status(401).json({ message: 'Incorrect password. Please verify your password.' });
       }
 
       return res.json({
