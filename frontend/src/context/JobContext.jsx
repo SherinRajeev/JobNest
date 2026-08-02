@@ -4,9 +4,10 @@ import { AuthContext } from './AuthContext';
 
 export const JobContext = createContext();
 
+// Real Geodesic Haversine Distance Calculation Helper (in Kilometers)
 export const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
   if (!lat1 || !lon1 || !lat2 || !lon2) return 0.5;
-  const R = 6371;
+  const R = 6371; // Earth's radius in km
   const dLat = (lat2 - lat1) * (Math.PI / 180);
   const dLon = (lon2 - lon1) * (Math.PI / 180);
   const a =
@@ -20,6 +21,7 @@ export const calculateDistanceKm = (lat1, lon1, lat2, lon2) => {
   return parseFloat(dist.toFixed(1));
 };
 
+// Known Coordinates Lookup Map for Kerala Locations
 export const cityCoordinatesMap = {
   'kottayam': { lat: 9.5916, lng: 76.5222, name: 'Kottayam Town' },
   'kanjikuzhy': { lat: 9.5916, lng: 76.5330, name: 'Kanjikuzhy, Kottayam' },
@@ -36,6 +38,7 @@ export const cityCoordinatesMap = {
   'kozhikode': { lat: 11.2588, lng: 75.7804, name: 'Kozhikode' }
 };
 
+// 16 Authentic Kerala Part-Time Shifts with Precise Geocoded Coordinates
 const defaultKeralaJobs = [
   {
     _id: 'job_1',
@@ -300,6 +303,8 @@ export const JobProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [userCoords, setUserCoords] = useState({ lat: 9.5916, lng: 76.5222 });
   const [detectedCity, setDetectedCity] = useState('Kottayam Town');
+  const [isGpsActive, setIsGpsActive] = useState(false);
+  const [gpsStatusMessage, setGpsStatusMessage] = useState(null);
 
   const [filters, setFilters] = useState({
     search: '',
@@ -317,13 +322,63 @@ export const JobProvider = ({ children }) => {
       if (key.includes(mapKey)) {
         setUserCoords({ lat: cityInfo.lat, lng: cityInfo.lng });
         setDetectedCity(cityInfo.name);
+        setIsGpsActive(false);
+        setGpsStatusMessage(`Selected Center: ${cityInfo.name}`);
         return;
       }
     }
     setUserCoords({ lat: 9.5916, lng: 76.5222 });
     setDetectedCity('Kottayam Town');
+    setIsGpsActive(false);
+    setGpsStatusMessage('Selected Center: Kottayam Town');
   };
 
+  // High-Precision HTML5 Geolocation Auto-Detection
+  const trackUserLocation = () => {
+    if (!navigator.geolocation) {
+      setGpsStatusMessage('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    setGpsStatusMessage('Detecting your live GPS coordinates...');
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        setUserCoords({ lat, lng });
+        setIsGpsActive(true);
+
+        try {
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+          const data = await res.json();
+          const place = data.address?.town || data.address?.city || data.address?.suburb || data.address?.county || 'Live Location';
+          setDetectedCity(`Live GPS (${place})`);
+          setGpsStatusMessage(`📍 Live GPS Active: ${place}`);
+        } catch (e) {
+          setDetectedCity('Live GPS Location');
+          setGpsStatusMessage(`📍 Live GPS Active (${lat.toFixed(3)}, ${lng.toFixed(3)})`);
+        }
+      },
+      (error) => {
+        let msg = 'Unable to fetch GPS. Defaulting to Kottayam Town.';
+        if (error.code === error.PERMISSION_DENIED) {
+          msg = 'Location permission denied. Using Kottayam Town.';
+        } else if (error.code === error.TIMEOUT) {
+          msg = 'Location request timed out. Using Kottayam Town.';
+        }
+        console.warn('Geolocation error:', error.message);
+        setUserCoords({ lat: 9.5916, lng: 76.5222 });
+        setDetectedCity('Kottayam Town');
+        setIsGpsActive(false);
+        setGpsStatusMessage(msg);
+      },
+      { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+    );
+  };
+
+  // Sync user profile location
   useEffect(() => {
     if (user?.location) {
       setCityLocation(user.location);
@@ -450,7 +505,6 @@ export const JobProvider = ({ children }) => {
       createdAt: new Date().toISOString()
     };
 
-    // Save to localStorage for instant client persistence
     const existingApps = JSON.parse(localStorage.getItem('jobnest_user_applications') || '[]');
     const updatedApps = [newApp, ...existingApps];
     localStorage.setItem('jobnest_user_applications', JSON.stringify(updatedApps));
@@ -475,6 +529,9 @@ export const JobProvider = ({ children }) => {
         setUserCoords,
         setCityLocation,
         detectedCity,
+        isGpsActive,
+        gpsStatusMessage,
+        trackUserLocation,
         toggleBookmark,
         createJobPost,
         applyJob

@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import { Filter, RotateCcw, MapPin, Search } from 'lucide-react';
+import { Filter, RotateCcw, MapPin, Search, Navigation } from 'lucide-react';
 import { JobContext } from '../context/JobContext';
 
 export const FilterSidebar = () => {
-  const { filters, setFilters, fetchJobs, detectedCity, setCityLocation } = useContext(JobContext);
+  const { filters, setFilters, fetchJobs, detectedCity, setCityLocation, trackUserLocation, isGpsActive, gpsStatusMessage } = useContext(JobContext);
 
   const categories = [
     'All',
@@ -58,14 +58,42 @@ export const FilterSidebar = () => {
         </button>
       </div>
 
-      {/* Your Current City Location Selector */}
-      <div className="form-group" style={{ marginBottom: '1.25rem', background: 'var(--slate-bg)', padding: '0.85rem', borderRadius: '12px', border: '1px solid var(--border-subtle)' }}>
-        <label className="form-label" style={{ fontSize: '0.82rem', color: '#0284c7', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <MapPin size={14} /> Center Location ({detectedCity}):
-        </label>
+      {/* GPS Auto-Location Detection Button & City Selector */}
+      <div className="form-group" style={{ marginBottom: '1.25rem', background: 'var(--slate-bg)', padding: '0.95rem', borderRadius: '14px', border: '1px solid var(--border-subtle)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+          <label className="form-label" style={{ fontSize: '0.82rem', color: isGpsActive ? 'var(--emerald)' : '#0284c7', margin: 0, display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 700 }}>
+            <MapPin size={14} /> {detectedCity}
+          </label>
+        </div>
+
+        <button
+          type="button"
+          onClick={trackUserLocation}
+          className="btn btn-primary btn-sm btn-full"
+          style={{
+            marginBottom: '0.6rem',
+            padding: '0.55rem',
+            fontSize: '0.84rem',
+            background: isGpsActive ? 'var(--emerald)' : 'var(--primary)',
+            borderColor: isGpsActive ? 'var(--emerald)' : 'var(--primary)',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px'
+          }}
+        >
+          <Navigation size={14} /> {isGpsActive ? 'GPS Active (Re-detect)' : 'Detect My Live Location'}
+        </button>
+
+        {gpsStatusMessage && (
+          <div style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginBottom: '0.5rem', lineHeight: 1.3 }}>
+            {gpsStatusMessage}
+          </div>
+        )}
+
         <select
           className="form-control"
-          style={{ fontSize: '0.88rem', padding: '0.5rem 0.75rem', marginTop: '0.35rem' }}
+          style={{ fontSize: '0.88rem', padding: '0.45rem 0.65rem' }}
           onChange={(e) => setCityLocation(e.target.value)}
           defaultValue="kottayam"
         >
